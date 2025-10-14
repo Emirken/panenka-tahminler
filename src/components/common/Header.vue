@@ -21,21 +21,22 @@
                 class="nav-link"
                 :class="{ 'active': $route.name === 'home' }"
             >
-              Anasayfa
+              <span style="color: #FF9800">Anasayfa</span>
             </router-link>
             <router-link
                 to="/editor-tahminleri"
                 class="nav-link"
                 :class="{ 'active': $route.name === 'editorPredictions' }"
             >
-              Editör Tahminleri
+              <span style="color: #FF9800">Editör Tahminleri</span>
             </router-link>
             <router-link
                 to="/etkinliklerimiz"
                 class="nav-link"
                 :class="{ 'active': $route.name === 'activities' }"
             >
-              Etkinliklerimiz
+              <span style="color: #FF9800">Etkinliklerimiz</span>
+
             </router-link>
           </div>
 
@@ -222,7 +223,7 @@ const navigateToAdmin = () => {
 
 <style scoped lang="scss">
 .header-container {
-  background-color: white;
+  background-color: rgba(0, 0, 0, 0.42);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
