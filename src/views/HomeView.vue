@@ -12,9 +12,7 @@
               İsabet;şans değil,analizdir!
             </p>
             <p class="text-body-1 mb-0 fade-in">
-              Panenka Tahminler, uzman editör kadromuzun analizleri ve özel algoritmalarımız ile
-              hazırlanan maç tahminlerini sizlerle buluşturuyor. Üyelik ve abonelik sistemlerimizle
-              kazancınızı katlayın, heyecana ortak olun!
+              Paylaştığımız tahminler, analizlerimizin ve futbola olan tutkumuzun bir ürünüdür.
             </p>
           </v-col>
         </v-row>
