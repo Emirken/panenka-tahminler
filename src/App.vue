@@ -1,30 +1,36 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <v-app>
+    <Header />
+    <v-main class="main-style" >
+      <router-view />
+    </v-main>
+    <Footer />
+  </v-app>
 </template>
 
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import Header from '@/components/common/Header.vue'
+import Footer from '@/components/common/Footer.vue'
+import { useAuthStore } from '@/store/auth'
+import { usePredictionsStore } from '@/store/predictions'
+import { useActivitiesStore } from '@/store/activities'
+
+const authStore = useAuthStore()
+const predictionsStore = usePredictionsStore()
+const activitiesStore = useActivitiesStore()
+
+onMounted(() => {
+  authStore.checkAuth()
+  predictionsStore.loadPredictions()
+  activitiesStore.loadActivities()
+})
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+.main-style{
+  margin-left: 10%;
+  margin-right: 10%;
 }
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+@import '@/assets/styles/main.scss';
 </style>

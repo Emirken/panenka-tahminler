@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { useAuthStore } from '@/store/auth'
 import HomeView from '../views/HomeView.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -8,18 +9,38 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/editor-tahminleri',
+    name: 'editorPredictions',
+    component: () => import('../views/EditorPredictionsView.vue')
+  },
+  {
+    path: '/etkinliklerimiz',
+    name: 'activities',
+    component: () => import('../views/ActivitiesView.vue')
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('../views/AdminView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+// Navigation Guard - Admin sayfası için giriş kontrolü
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    // Giriş yapmamış kullanıcıyı ana sayfaya yönlendir
+    next({ name: 'home' })
+  } else {
+    next()
+  }
 })
 
 export default router
