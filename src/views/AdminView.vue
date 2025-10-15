@@ -127,7 +127,7 @@
             <div v-if="activeTab === 'predictions'">
               <v-card elevation="2">
                 <v-card-title class="bg-primary text-white">
-                  <span class="text-h6">Tahminlerim</span>
+                  <span class="text-h6">Tahminlerim ({{ myPredictions.length }} tahmin)</span>
                 </v-card-title>
                 <v-card-text class="pa-6">
                   <div v-if="myPredictions.length === 0" class="text-center py-8">
@@ -318,7 +318,7 @@
               </v-card>
             </div>
 
-            <!-- Today's Picks Tab -->
+            <!-- Today's Picks Tab - SADECE KENDI TAHMİNLERİ -->
             <div v-if="activeTab === 'todays-picks'">
               <v-card elevation="2">
                 <v-card-title class="bg-primary text-white pa-4 d-flex justify-space-between align-center">
@@ -327,31 +327,31 @@
                     <span class="text-h6">Günün Panenkası Yönetimi</span>
                   </div>
                   <v-chip color="white" variant="text">
-                    {{ selectedTodaysPicks.length }}/3 Seçili
+                    {{ mySelectedTodaysPicks.length }}/1 Seçili
                   </v-chip>
                 </v-card-title>
                 <v-card-text class="pa-6">
                   <v-alert type="info" class="mb-4">
-                    Ana sayfada gösterilecek maksimum 3 tahmin seçin. Her editörden 1 tahmin seçmeniz önerilir.
+                    Ana sayfada gösterilecek 1 tahmininizi seçin. Sadece kendi tahminlerinizi seçebilirsiniz.
                   </v-alert>
 
-                  <div v-if="allPredictions.length === 0" class="text-center py-8">
+                  <div v-if="myPredictions.length === 0" class="text-center py-8">
                     <v-icon size="64" color="grey-lighten-1">mdi-clipboard-text-off</v-icon>
-                    <p class="text-h6 text-grey mt-4">Henüz tahmin eklenmemiş.</p>
+                    <p class="text-h6 text-grey mt-4">Henüz tahmin eklenmemiş. Önce tahmin ekleyin.</p>
                   </div>
 
                   <v-list v-else>
                     <v-list-item
-                        v-for="prediction in allPredictions"
+                        v-for="prediction in myPredictions"
                         :key="prediction.id"
                         class="mb-4 border rounded"
-                        :class="{ 'selected-pick': selectedTodaysPicks.includes(prediction.id) }"
+                        :class="{ 'selected-pick': mySelectedTodaysPicks.includes(prediction.id) }"
                     >
                       <template v-slot:prepend>
                         <v-checkbox
-                            :model-value="selectedTodaysPicks.includes(prediction.id)"
-                            @update:model-value="toggleTodaysPick(prediction.id)"
-                            :disabled="!selectedTodaysPicks.includes(prediction.id) && selectedTodaysPicks.length >= 3"
+                            :model-value="mySelectedTodaysPicks.includes(prediction.id)"
+                            @update:model-value="toggleMyTodaysPick(prediction.id)"
+                            :disabled="!mySelectedTodaysPicks.includes(prediction.id) && mySelectedTodaysPicks.length >= 1"
                             color="primary"
                         />
                       </template>
@@ -360,7 +360,6 @@
                         {{ prediction.homeTeam }} {{ prediction.homeLogo }} vs {{ prediction.awayLogo }} {{ prediction.awayTeam }}
                       </v-list-item-title>
                       <v-list-item-subtitle>
-                        <v-chip size="x-small" color="secondary" class="mr-2">{{ prediction.editorName }}</v-chip>
                         <v-chip size="x-small" color="primary" class="mr-2">{{ prediction.league }}</v-chip>
                         {{ prediction.prediction }} - Oran: {{ prediction.odds }}
                       </v-list-item-subtitle>
@@ -368,7 +367,7 @@
                       <template v-slot:append>
                         <div class="d-flex align-center ga-2">
                           <v-chip
-                              v-if="selectedTodaysPicks.includes(prediction.id)"
+                              v-if="mySelectedTodaysPicks.includes(prediction.id)"
                               color="success"
                               size="small"
                               class="mr-2"
@@ -580,14 +579,21 @@ const newActivity = ref({
   description: '',
 })
 
+// SADECE KENDI TAHMİNLERİ
 const myPredictions = computed(() => {
   if (!authStore.user) return []
   return predictionsStore.predictionsByEditor(authStore.user.id)
 })
 
-const allPredictions = computed(() => predictionsStore.allPredictions)
 const activities = computed(() => activitiesStore.allActivities)
-const selectedTodaysPicks = computed(() => predictionsStore.todaysPicks)
+
+// SADECE KENDI TAHMİNLERİNDEN SEÇİLENLER
+const mySelectedTodaysPicks = computed(() => {
+  if (!authStore.user) return []
+  const allPicks = predictionsStore.todaysPicks
+  const myPredictionIds = myPredictions.value.map(p => p.id)
+  return allPicks.filter(pickId => myPredictionIds.includes(pickId))
+})
 
 const availableTeams = computed(() => {
   return leagueTeams[newPrediction.value.league] || []
@@ -660,10 +666,11 @@ const deletePredictionFromPicks = (id: string) => {
   }
 }
 
-const toggleTodaysPick = (predictionId: string) => {
-  if (selectedTodaysPicks.value.includes(predictionId)) {
+// SADECE KENDİ TAHMİNLERİNİ SEÇEBİLİR (MAX 1)
+const toggleMyTodaysPick = (predictionId: string) => {
+  if (mySelectedTodaysPicks.value.includes(predictionId)) {
     predictionsStore.removeFromTodaysPicks(predictionId)
-  } else if (selectedTodaysPicks.value.length < 3) {
+  } else if (mySelectedTodaysPicks.value.length < 1) {
     predictionsStore.addToTodaysPicks(predictionId)
   }
 }
