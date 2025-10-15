@@ -3,7 +3,7 @@
     <v-container>
       <v-row align="center">
         <v-col cols="12" md="6">
-          <div class="d-flex align-center mb-4 mb-md-0">
+          <div class="d-flex align-center mb-4 mb-md-0 justify-center justify-md-start">
             <v-avatar size="32" color="primary" class="mr-3">
               <v-icon color="white" size="20">mdi-soccer</v-icon>
             </v-avatar>
@@ -54,5 +54,38 @@
   background-color: #2C3E50 !important;
   color: white;
   margin-top: auto;
+  width: 100%;
+  padding: 32px 0;
+
+  // Mobil düzenlemeler
+  @media (max-width: 960px) {
+    padding: 24px 0;
+
+    .text-h6 {
+      font-size: 1rem !important;
+    }
+
+    .text-body-2 {
+      font-size: 0.75rem !important;
+    }
+  }
+
+  // Çok küçük ekranlar
+  @media (max-width: 600px) {
+    padding: 20px 0;
+
+    .v-avatar {
+      width: 28px !important;
+      height: 28px !important;
+
+      .v-icon {
+        font-size: 16px !important;
+      }
+    }
+
+    .text-h6 {
+      font-size: 0.875rem !important;
+    }
+  }
 }
 </style>
