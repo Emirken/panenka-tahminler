@@ -23,6 +23,7 @@
             >
               <v-tab value="predictions">Tahminlerim</v-tab>
               <v-tab value="add-prediction">Yeni Tahmin Ekle</v-tab>
+              <v-tab value="todays-picks">Günün Panenkası</v-tab>
               <v-tab value="activities">Etkinlikler</v-tab>
             </v-tabs>
           </v-card>
@@ -227,6 +228,80 @@
             </v-card>
           </div>
 
+          <!-- Today's Picks Tab -->
+          <div v-if="activeTab === 'todays-picks'">
+            <v-card elevation="2">
+              <v-card-title class="bg-primary text-white pa-4 d-flex justify-space-between align-center">
+                <div>
+                  <v-icon class="mr-2">mdi-star</v-icon>
+                  <span class="text-h6">Günün Panenkası Yönetimi</span>
+                </div>
+                <v-chip color="white" variant="text">
+                  {{ selectedTodaysPicks.length }}/3 Seçili
+                </v-chip>
+              </v-card-title>
+              <v-card-text class="pa-6">
+                <v-alert type="info" class="mb-4">
+                  Ana sayfada gösterilecek maksimum 3 tahmin seçin. Her editörden 1 tahmin seçmeniz önerilir.
+                </v-alert>
+
+                <div v-if="allPredictions.length === 0" class="text-center py-8">
+                  <v-icon size="64" color="grey-lighten-1">mdi-clipboard-text-off</v-icon>
+                  <p class="text-h6 text-grey mt-4">Henüz tahmin eklenmemiş.</p>
+                </div>
+
+                <v-list v-else>
+                  <v-list-item
+                      v-for="prediction in allPredictions"
+                      :key="prediction.id"
+                      class="mb-4 border rounded"
+                      :class="{ 'selected-pick': selectedTodaysPicks.includes(prediction.id) }"
+                  >
+                    <template v-slot:prepend>
+                      <v-checkbox
+                          :model-value="selectedTodaysPicks.includes(prediction.id)"
+                          @update:model-value="toggleTodaysPick(prediction.id)"
+                          :disabled="!selectedTodaysPicks.includes(prediction.id) && selectedTodaysPicks.length >= 3"
+                          color="primary"
+                      />
+                    </template>
+
+                    <v-list-item-title class="font-weight-bold mb-2">
+                      {{ prediction.homeTeam }} {{ prediction.homeLogo }} vs {{ prediction.awayLogo }} {{ prediction.awayTeam }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      <v-chip size="x-small" color="secondary" class="mr-2">{{ prediction.editorName }}</v-chip>
+                      <v-chip size="x-small" color="primary" class="mr-2">{{ prediction.league }}</v-chip>
+                      {{ prediction.prediction }} - Oran: {{ prediction.odds }}
+                    </v-list-item-subtitle>
+
+                    <template v-slot:append>
+                      <div class="d-flex align-center ga-2">
+                        <v-chip
+                            v-if="selectedTodaysPicks.includes(prediction.id)"
+                            color="success"
+                            size="small"
+                            class="mr-2"
+                        >
+                          <v-icon size="16" class="mr-1">mdi-star</v-icon>
+                          Günün Panenkası
+                        </v-chip>
+                        <v-btn
+                            icon
+                            size="small"
+                            color="error"
+                            @click="deletePredictionFromPicks(prediction.id)"
+                        >
+                          <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                      </div>
+                    </template>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </div>
+
           <!-- Activities Tab -->
           <div v-if="activeTab === 'activities'">
             <v-card elevation="2">
@@ -376,14 +451,15 @@ const myPredictions = computed(() => {
   return predictionsStore.predictionsByEditor(authStore.user.id)
 })
 
+const allPredictions = computed(() => predictionsStore.allPredictions)
 const activities = computed(() => activitiesStore.allActivities)
 
-// Seçilen ligdeki takımları getir (teams.ts'den)
+const selectedTodaysPicks = computed(() => predictionsStore.todaysPicks)
+
 const availableTeams = computed(() => {
   return leagueTeams[newPrediction.value.league] || []
 })
 
-// Liga değiştiğinde takım seçimlerini temizle
 const onLeagueChange = () => {
   newPrediction.value.homeTeam = ''
   newPrediction.value.awayTeam = ''
@@ -391,13 +467,11 @@ const onLeagueChange = () => {
   newPrediction.value.awayLogo = ''
 }
 
-// Ev sahibi takım seçildiğinde logoyu otomatik doldur
 const onHomeTeamChange = () => {
   const team = newPrediction.value.homeTeam
   newPrediction.value.homeLogo = teamLogos[team] || '⚽'
 }
 
-// Deplasman takımı seçildiğinde logoyu otomatik doldur
 const onAwayTeamChange = () => {
   const team = newPrediction.value.awayTeam
   newPrediction.value.awayLogo = teamLogos[team] || '⚽'
@@ -420,7 +494,6 @@ const addPrediction = () => {
     matchDate: newPrediction.value.matchDate,
   })
 
-  // Form'u temizle
   newPrediction.value = {
     league: '',
     homeTeam: '',
@@ -443,6 +516,22 @@ const deletePrediction = (id: string) => {
     predictionsStore.deletePrediction(id)
     successMessage.value = 'Tahmin silindi!'
     showSuccessSnackbar.value = true
+  }
+}
+
+const deletePredictionFromPicks = (id: string) => {
+  if (confirm('Bu tahmini silmek istediğinizden emin misiniz? Günün panenkasından da kaldırılacaktır.')) {
+    predictionsStore.deletePrediction(id)
+    successMessage.value = 'Tahmin başarıyla silindi!'
+    showSuccessSnackbar.value = true
+  }
+}
+
+const toggleTodaysPick = (predictionId: string) => {
+  if (selectedTodaysPicks.value.includes(predictionId)) {
+    predictionsStore.removeFromTodaysPicks(predictionId)
+  } else if (selectedTodaysPicks.value.length < 3) {
+    predictionsStore.addToTodaysPicks(predictionId)
   }
 }
 
@@ -486,5 +575,10 @@ const deleteActivity = (id: string) => {
 
 .border {
   border: 1px solid #e0e0e0;
+}
+
+.selected-pick {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-color: #4CAF50 !important;
 }
 </style>

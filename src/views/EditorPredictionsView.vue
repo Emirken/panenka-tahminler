@@ -61,10 +61,27 @@
                     <div>
                       <h3 class="match-title">{{ prediction.homeTeam }} - {{ prediction.awayTeam }}</h3>
                       <p class="editor-name">Yorumcu: {{ prediction.editorName }}</p>
+                      <p class="match-date">
+                        <v-icon size="16" class="mr-1">mdi-calendar</v-icon>
+                        {{ formatMatchDate(prediction.matchDate) }}
+                      </p>
                     </div>
                     <v-chip color="primary" size="small" variant="tonal">
                       {{ prediction.league }}
                     </v-chip>
+                  </div>
+
+                  <!-- Teams with Logos -->
+                  <div class="teams-display mb-4">
+                    <div class="team-info">
+                      <span class="team-logo">{{ prediction.homeLogo }}</span>
+                      <span class="team-name">{{ prediction.homeTeam }}</span>
+                    </div>
+                    <span class="vs-text">VS</span>
+                    <div class="team-info">
+                      <span class="team-logo">{{ prediction.awayLogo }}</span>
+                      <span class="team-name">{{ prediction.awayTeam }}</span>
+                    </div>
                   </div>
 
                   <!-- Explanation -->
@@ -136,6 +153,7 @@ const leagueNameMap: Record<string, string> = {
   'diger': 'Diğer Ligler',
 }
 
+// Store'dan verileri çek ve filtrele
 const filteredPredictions = computed(() => {
   const editorId = editorIdMap[selectedEditor.value]
   const leagueName = leagueNameMap[selectedLeague.value]
@@ -144,6 +162,18 @@ const filteredPredictions = computed(() => {
       p => p.editorId === editorId && p.league === leagueName
   )
 })
+
+// Tarih formatla
+const formatMatchDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 </script>
 
 <style scoped lang="scss">
@@ -271,6 +301,46 @@ const filteredPredictions = computed(() => {
           color: #666;
           margin: 0;
         }
+
+        .match-date {
+          font-size: 0.75rem;
+          color: #999;
+          margin: 4px 0 0 0;
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .teams-display {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 16px;
+        background: #f9f9f9;
+        border-radius: 8px;
+
+        .team-info {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+
+          .team-logo {
+            font-size: 2rem;
+          }
+
+          .team-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #333;
+          }
+        }
+
+        .vs-text {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #999;
+        }
       }
 
       .prediction-explanation {
@@ -340,6 +410,15 @@ const filteredPredictions = computed(() => {
     .prediction-header {
       flex-direction: column;
       gap: 12px;
+    }
+
+    .teams-display {
+      flex-direction: column;
+      gap: 12px;
+
+      .vs-text {
+        margin: 8px 0;
+      }
     }
 
     .prediction-box {

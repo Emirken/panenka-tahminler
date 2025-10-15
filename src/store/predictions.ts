@@ -3,6 +3,7 @@ import { Prediction } from '@/types'
 
 interface PredictionsState {
     predictions: Prediction[]
+    todaysPicks: string[] // Günün panenkası seçilen tahmin ID'leri (max 3)
 }
 
 export const usePredictionsStore = defineStore('predictions', {
@@ -15,8 +16,8 @@ export const usePredictionsStore = defineStore('predictions', {
                 league: 'Premier Lig',
                 homeTeam: 'Aston Villa',
                 awayTeam: 'Arsenal',
-                homeLogo: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-                awayLogo: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+                homeLogo: '🔴🔵',
+                awayLogo: '🔴⚪',
                 prediction: '2.5 Gol Üstü',
                 odds: 1.70,
                 explanation: 'Unai Emery eski takımına karşı sürpriz yapabilir. Aston Villa kendi evinde çok etkili bir takım. Arsenal şampiyonluk yolunda puan kaybetmek istemeyecektir. Gollü ve çekişmeli bir maç bekliyorum.',
@@ -30,8 +31,8 @@ export const usePredictionsStore = defineStore('predictions', {
                 league: 'İtalya Serie A',
                 homeTeam: 'Inter',
                 awayTeam: 'Juventus',
-                homeLogo: '🇮🇹',
-                awayLogo: '🇮🇹',
+                homeLogo: '🔵⚫',
+                awayLogo: '⚪⚫',
                 prediction: '2.5 Gol Altı',
                 odds: 1.80,
                 explanation: 'İtalya\'nın en büyük derbisi. İki takım da zirve mücadelesi veriyor. Kontrollü bir oyun ve az gol bekliyorum.',
@@ -43,10 +44,10 @@ export const usePredictionsStore = defineStore('predictions', {
                 editorId: '1',
                 editorName: 'Emircan Adak',
                 league: 'Almanya Bundesliga',
-                homeTeam: 'Bayern Münih',
+                homeTeam: 'Bayern',
                 awayTeam: 'Stuttgart',
-                homeLogo: '🇩🇪',
-                awayLogo: '🇩🇪',
+                homeLogo: '🔴⚪',
+                awayLogo: '⚪🔴',
                 prediction: 'Handikaplı Maç Sonucu 1',
                 odds: 1.95,
                 explanation: 'Stuttgart bu sezonun sürpriz takımı ancak Allianz Arena\'da işleri zor. Bayern Münih, Leverkusen\'i takibini sürdürmek için hata yapmayacaktır. Farklı bir galibiyet alabilirler.',
@@ -69,6 +70,7 @@ export const usePredictionsStore = defineStore('predictions', {
                 createdAt: '2025-10-13T13:00:00',
             },
         ],
+        todaysPicks: ['1', '2', '4'], // Başlangıçta 3 tahmin seçili
     }),
 
     getters: {
@@ -82,6 +84,13 @@ export const usePredictionsStore = defineStore('predictions', {
             return [...state.predictions]
                 .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 .slice(0, 10)
+        },
+
+        // Günün Panenkası için seçilen tahminler
+        todaysPicksPredictions: (state) => {
+            return state.todaysPicks
+                .map(id => state.predictions.find(p => p.id === id))
+                .filter(p => p !== undefined) as Prediction[]
         },
     },
 
@@ -106,17 +115,46 @@ export const usePredictionsStore = defineStore('predictions', {
 
         deletePrediction(id: string) {
             this.predictions = this.predictions.filter(p => p.id !== id)
+            // Silinen tahmin günün panenkasında varsa oradan da kaldır
+            this.todaysPicks = this.todaysPicks.filter(pickId => pickId !== id)
+            this.savePredictions()
+        },
+
+        // Günün panenkası seçimini güncelle
+        setTodaysPicks(predictionIds: string[]) {
+            // Maksimum 3 tahmin seçilebilir
+            this.todaysPicks = predictionIds.slice(0, 3)
+            this.savePredictions()
+        },
+
+        // Günün panenkasına tahmin ekle
+        addToTodaysPicks(predictionId: string) {
+            if (this.todaysPicks.length < 3 && !this.todaysPicks.includes(predictionId)) {
+                this.todaysPicks.push(predictionId)
+                this.savePredictions()
+            }
+        },
+
+        // Günün panenkasından tahmin çıkar
+        removeFromTodaysPicks(predictionId: string) {
+            this.todaysPicks = this.todaysPicks.filter(id => id !== predictionId)
             this.savePredictions()
         },
 
         savePredictions() {
             localStorage.setItem('predictions', JSON.stringify(this.predictions))
+            localStorage.setItem('todaysPicks', JSON.stringify(this.todaysPicks))
         },
 
         loadPredictions() {
             const stored = localStorage.getItem('predictions')
             if (stored) {
                 this.predictions = JSON.parse(stored)
+            }
+
+            const storedPicks = localStorage.getItem('todaysPicks')
+            if (storedPicks) {
+                this.todaysPicks = JSON.parse(storedPicks)
             }
         },
     },

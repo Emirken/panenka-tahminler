@@ -6,7 +6,7 @@
         <v-row justify="center">
           <v-col cols="12" md="10" class="text-center">
             <h1 class="text-h2 font-weight-bold text-primary mb-4 fade-in">
-              Hoş Geldiniz!
+              Hoş Geldin!
             </h1>
             <p class="text-h5 mb-8 fade-in">
               İsabet;şans değil,analizdir!
@@ -19,39 +19,49 @@
       </div>
     </section>
 
-    <!-- Today's Match -->
+    <!-- Today's Match Section -->
     <section class="today-match-section py-12">
       <div class="content-section">
-        <h2 class="section-title text-center mb-8">
-          <span class="title-gunun">Günün</span> <span class="title-panenkasi">Panenkası</span>
+        <h2 class="section-title text-center mb-4">
+          Günün Panenkası
         </h2>
 
-        <v-row justify="center">
-          <v-col cols="12" sm="10" md="6" lg="5">
+        <p class="section-description text-center mb-8">
+          Editörlerimizin belli bir oran üstü yaptığı tahminler
+        </p>
+
+        <v-row>
+          <!-- Dinamik olarak günün panenkası tahminlerini göster -->
+          <v-col
+              cols="12"
+              md="4"
+              v-for="prediction in todaysPicks"
+              :key="prediction.id"
+          >
             <v-card elevation="6" class="match-card">
               <!-- Header with League and Date -->
               <div class="match-header">
-                <v-chip
-                    color="primary"
-                    size="small"
-                    class="league-chip"
-                >
-                  Süper Lig
+                <v-chip color="primary" size="small" class="league-chip">
+                  {{ prediction.league }}
                 </v-chip>
-                <span class="match-date">28 Ekim 2023 - 21:00</span>
+                <span class="match-date">{{ formatMatchDate(prediction.matchDate) }}</span>
+              </div>
+
+              <!-- Editor Name -->
+              <div class="editor-badge">
+                <v-chip color="secondary" size="small">
+                  <v-icon size="16" class="mr-1">mdi-account</v-icon>
+                  {{ prediction.editorName }}
+                </v-chip>
               </div>
 
               <!-- Teams Section -->
               <div class="teams-container">
                 <div class="team-block">
                   <div class="team-logo-wrapper">
-                    <img
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8JqZHYHWzIDkcMqLFXsnJhH7xOR0l-8ZAnaHHGOjUuP5dZ7UJiwHYyjkk71aOTeaSEEVuD8GB3VBme0NsiiL8iil_AMp1lxJOye_BwrHUHZwVRWOturAGaIDAt_7FuovJkchSzOQKk0oqfomSDPBlpqczuI_1fCXpJNbQzEFtDn_6dXulMC14DuDbLQ3H22DehTti8Zz5lB-Nfq1a4N2CzGcH1arEFK1YIFtddtwRph9GXWVEbhsmzlVzDOjmQrl1L_Rk3s0UzSE"
-                        alt="Galatasaray"
-                        class="team-logo"
-                    />
+                    <span class="team-emoji">{{ prediction.homeLogo }}</span>
                   </div>
-                  <span class="team-name">Galatasaray</span>
+                  <span class="team-name">{{ prediction.homeTeam }}</span>
                 </div>
 
                 <div class="vs-divider">
@@ -60,21 +70,17 @@
 
                 <div class="team-block">
                   <div class="team-logo-wrapper">
-                    <img
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYFJFQiP8FnEV87PzNCWRDJHCesrQWWMsa0A5S1OIN_3DPnIpMPAEsXUlL2mcZszIYI_dqANH706q_CH2o9Mk3fMvGevwXoAXQFIb32rGP6VjaNBmvVD15CANCLfw7ft5g6wkIiGozexb5aZ6WRxtT8g-mXmSFB6UTQVDUIfn6uT5LP3cjmDtv3XMASNPvFy7LIfTGpQ1vsGbPhUrVpiN8Poo65rFcCB4Gt0E_ZKobaa97BqepkExCTyJ2h9LComV19CWgniiJSRA"
-                        alt="Fenerbahçe"
-                        class="team-logo"
-                    />
+                    <span class="team-emoji">{{ prediction.awayLogo }}</span>
                   </div>
-                  <span class="team-name">Fenerbahçe</span>
+                  <span class="team-name">{{ prediction.awayTeam }}</span>
                 </div>
               </div>
 
               <!-- Prediction Section -->
               <div class="prediction-box">
                 <p class="prediction-label">Tahmin</p>
-                <p class="prediction-text">Maç Sonucu 1 & 2.5 Gol Üstü</p>
-                <p class="prediction-odds">Oran: 2.75</p>
+                <p class="prediction-text">{{ prediction.prediction }}</p>
+                <p class="prediction-odds">Oran: {{ prediction.odds.toFixed(2) }}</p>
               </div>
 
               <!-- CTA Button -->
@@ -89,26 +95,14 @@
               </v-btn>
             </v-card>
           </v-col>
-        </v-row>
-      </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features-section py-12">
-      <div class="content-section">
-        <h2 class="text-h4 font-weight-bold text-center mb-10 text-primary">
-          Üye Etkinliklerimiz
-        </h2>
-
-        <v-row>
-          <v-col cols="12" md="4" v-for="feature in features" :key="feature.id">
-            <v-card elevation="2" class="h-100 text-center pa-6">
-              <v-avatar size="80" color="primary" class="mb-4">
-                <v-icon size="40" color="white">{{ feature.icon }}</v-icon>
-              </v-avatar>
-
-              <h3 class="text-h6 font-weight-bold mb-3">{{ feature.title }}</h3>
-              <p class="text-body-2">{{ feature.description }}</p>
+          <!-- Eğer tahmin yoksa boş durum göster -->
+          <v-col cols="12" v-if="todaysPicks.length === 0">
+            <v-card elevation="2" class="pa-8 text-center">
+              <v-icon size="64" color="grey-lighten-1">mdi-calendar-remove</v-icon>
+              <p class="text-h6 text-grey mt-4">
+                Henüz günün panenkası seçilmemiş. Admin panelden tahmin seçebilirsiniz.
+              </p>
             </v-card>
           </v-col>
         </v-row>
@@ -119,11 +113,23 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useActivitiesStore } from '@/store/activities'
+import { usePredictionsStore } from '@/store/predictions'
 
-const activitiesStore = useActivitiesStore()
+const predictionsStore = usePredictionsStore()
 
-const features = computed(() => activitiesStore.allActivities)
+// Günün panenkası tahminlerini store'dan çek
+const todaysPicks = computed(() => predictionsStore.todaysPicksPredictions)
+
+// Tarih formatla
+const formatMatchDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'long',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 </script>
 
 <style scoped lang="scss">
@@ -137,28 +143,35 @@ const features = computed(() => activitiesStore.allActivities)
   .section-title {
     font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 2rem;
+    color: #FF9800;
+  }
 
-    .title-gunun {
-      color: #FF9800;
-    }
-
-    .title-panenkasi {
-      color: #FBBF24;
-    }
+  .section-description {
+    font-size: 1.125rem;
+    color: #666;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .match-card {
     background: white;
     border-radius: 16px !important;
-    padding: 32px;
+    padding: 24px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease;
+    height: 100%;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15) !important;
+    }
 
     .match-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
 
       .league-chip {
         background-color: #FF9800 !important;
@@ -167,27 +180,32 @@ const features = computed(() => activitiesStore.allActivities)
       }
 
       .match-date {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         color: #666;
       }
+    }
+
+    .editor-badge {
+      margin-bottom: 20px;
+      text-align: center;
     }
 
     .teams-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 32px 0;
+      margin: 24px 0;
 
       .team-block {
         flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
 
         .team-logo-wrapper {
-          width: 80px;
-          height: 80px;
+          width: 60px;
+          height: 60px;
           border-radius: 12px;
           overflow: hidden;
           display: flex;
@@ -200,11 +218,15 @@ const features = computed(() => activitiesStore.allActivities)
             height: 100%;
             object-fit: contain;
           }
+
+          .team-emoji {
+            font-size: 2rem;
+          }
         }
 
         .team-name {
           font-weight: 700;
-          font-size: 1.125rem;
+          font-size: 0.875rem;
           text-align: center;
           color: #333;
         }
@@ -212,10 +234,10 @@ const features = computed(() => activitiesStore.allActivities)
 
       .vs-divider {
         flex: 0 0 auto;
-        padding: 0 20px;
+        padding: 0 12px;
 
         .vs-text {
-          font-size: 2rem;
+          font-size: 1.25rem;
           font-weight: 700;
           color: #999;
         }
@@ -224,37 +246,37 @@ const features = computed(() => activitiesStore.allActivities)
 
     .prediction-box {
       background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
-      padding: 20px;
+      padding: 16px;
       border-radius: 12px;
       text-align: center;
-      margin: 24px 0;
+      margin: 20px 0;
 
       .prediction-label {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         color: #666;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
       }
 
       .prediction-text {
-        font-size: 1.25rem;
+        font-size: 1rem;
         font-weight: 700;
         color: #FF9800;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
       }
 
       .prediction-odds {
-        font-size: 1.125rem;
+        font-size: 1rem;
         font-weight: 600;
         color: #FBBF24;
       }
     }
 
     .cta-button {
-      margin-top: 24px;
+      margin-top: 20px;
       text-transform: none !important;
       font-weight: 700;
-      font-size: 1rem;
-      padding: 24px 0 !important;
+      font-size: 0.875rem;
+      padding: 20px 0 !important;
       border-radius: 12px !important;
       box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3) !important;
       transition: all 0.3s ease;
@@ -267,50 +289,47 @@ const features = computed(() => activitiesStore.allActivities)
   }
 }
 
-.features-section {
-  background-color: #FFF8E1;
-}
-
-.h-100 {
-  height: 100%;
-}
-
 .content-section {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 // Mobile responsive
-@media (max-width: 600px) {
+@media (max-width: 960px) {
   .today-match-section {
     .match-card {
+      margin-bottom: 24px;
       padding: 20px;
 
       .teams-container {
         .team-block {
           .team-logo-wrapper {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
+
+            .team-emoji {
+              font-size: 1.5rem;
+            }
           }
 
           .team-name {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
           }
         }
 
         .vs-divider {
-          padding: 0 10px;
+          padding: 0 8px;
 
           .vs-text {
-            font-size: 1.5rem;
+            font-size: 1rem;
           }
         }
       }
 
       .prediction-box {
         .prediction-text {
-          font-size: 1rem;
+          font-size: 0.875rem;
         }
       }
     }

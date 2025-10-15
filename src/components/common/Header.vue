@@ -30,14 +30,14 @@
             >
               <span style="color: #FF9800">Editör Tahminleri</span>
             </router-link>
-            <router-link
+<!--            <router-link
                 to="/etkinliklerimiz"
                 class="nav-link"
                 :class="{ 'active': $route.name === 'activities' }"
             >
               <span style="color: #FF9800">Etkinliklerimiz</span>
 
-            </router-link>
+            </router-link>-->
           </div>
 
           <!-- Right Section (Theme & User) -->
