@@ -14,6 +14,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/EditorPredictionsView.vue')
   },
   {
+    path: '/oku',
+    name: 'read',
+    component: () => import('../views/ReadView.vue')
+  },
+  {
+    path: '/amacimiz',
+    name: 'purpose',
+    component: () => import('../views/PurposeView.vue')
+  },
+  {
     path: '/etkinliklerimiz',
     name: 'activities',
     component: () => import('../views/ActivitiesView.vue')
@@ -22,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin',
     name: 'admin',
     component: () => import('../views/AdminView.vue'),
-    meta: { requiresAuth: true }
+    // requiresAuth kaldırıldı - AdminView kendi içinde kontrol edecek
   }
 ]
 
@@ -31,16 +41,5 @@ const router = createRouter({
   routes
 })
 
-// Navigation Guard - Admin sayfası için giriş kontrolü
-router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
-
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    // Giriş yapmamış kullanıcıyı ana sayfaya yönlendir
-    next({ name: 'home' })
-  } else {
-    next()
-  }
-})
-
+// Navigation Guard kaldırıldı - AdminView içinde kontrol yapılıyor
 export default router

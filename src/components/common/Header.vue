@@ -21,38 +21,34 @@
                 class="nav-link"
                 :class="{ 'active': $route.name === 'home' }"
             >
-              <span style="color: #FF9800">Anasayfa</span>
+              Anasayfa
             </router-link>
             <router-link
                 to="/editor-tahminleri"
                 class="nav-link"
                 :class="{ 'active': $route.name === 'editorPredictions' }"
             >
-              <span style="color: #FF9800">Editör Tahminleri</span>
+              Editör Tahminleri
             </router-link>
-<!--            <router-link
-                to="/etkinliklerimiz"
+            <router-link
+                to="/oku"
                 class="nav-link"
-                :class="{ 'active': $route.name === 'activities' }"
+                :class="{ 'active': $route.name === 'read' }"
             >
-              <span style="color: #FF9800">Etkinliklerimiz</span>
-
-            </router-link>-->
+              Oku
+            </router-link>
+            <router-link
+                to="/amacimiz"
+                class="nav-link"
+                :class="{ 'active': $route.name === 'purpose' }"
+            >
+              Amacımız
+            </router-link>
           </div>
 
-          <!-- Right Section (Theme & User) -->
+          <!-- Right Section -->
           <div class="d-flex align-center" style="gap: 16px;">
-            <!-- Theme Toggle -->
-            <v-btn
-                icon
-                variant="text"
-                class="theme-toggle"
-                @click="toggleTheme"
-            >
-              <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
-            </v-btn>
-
-            <!-- User Section -->
+            <!-- User Section - Sadece giriş yapıldıysa göster -->
             <div v-if="authStore.isAuthenticated" class="hidden-sm-and-down">
               <v-menu>
                 <template v-slot:activator="{ props }">
@@ -61,30 +57,26 @@
                       class="user-btn"
                       v-bind="props"
                   >
-                    <v-icon class="mr-1">mdi-account-circle</v-icon>
+                    <v-icon class="mr-1" color="white">mdi-account-circle</v-icon>
                     <span>{{ authStore.user?.username }}</span>
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item @click="navigateToAdmin">
+                  <v-list-item @click="navigateToAdmin" style="cursor: pointer;">
+                    <template v-slot:prepend>
+                      <v-icon>mdi-shield-account</v-icon>
+                    </template>
                     <v-list-item-title>Admin Panel</v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="logout">
+                  <v-list-item @click="logout" style="cursor: pointer;">
+                    <template v-slot:prepend>
+                      <v-icon>mdi-logout</v-icon>
+                    </template>
                     <v-list-item-title>Çıkış Yap</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
             </div>
-
-            <v-btn
-                v-else
-                variant="text"
-                class="user-btn hidden-sm-and-down"
-                @click="showLoginDialog = true"
-            >
-              <v-icon class="mr-1">mdi-account-circle</v-icon>
-              <span>Giriş Yap</span>
-            </v-btn>
 
             <!-- Mobile Menu Button -->
             <v-btn
@@ -93,7 +85,7 @@
                 class="hidden-md-and-up"
                 @click="mobileMenuOpen = !mobileMenuOpen"
             >
-              <v-icon>mdi-menu</v-icon>
+              <v-icon color="white">mdi-menu</v-icon>
             </v-btn>
           </div>
         </div>
@@ -117,60 +109,41 @@
             Editör Tahminleri
           </router-link>
           <router-link
-              to="/etkinliklerimiz"
+              to="/oku"
               class="mobile-link"
-              :class="{ 'active': $route.name === 'activities' }"
+              :class="{ 'active': $route.name === 'read' }"
               @click="mobileMenuOpen = false"
           >
-            Etkinliklerimiz
+            Oku
+          </router-link>
+          <router-link
+              to="/amacimiz"
+              class="mobile-link"
+              :class="{ 'active': $route.name === 'purpose' }"
+              @click="mobileMenuOpen = false"
+          >
+            Amacımız
           </router-link>
 
-          <v-divider class="my-2" />
+          <!-- Mobil için kullanıcı menüsü - Sadece giriş yapıldıysa -->
+          <template v-if="authStore.isAuthenticated">
+            <v-divider class="my-2" />
 
-          <div v-if="authStore.isAuthenticated" class="mobile-user">
-            <div class="mobile-link" @click="navigateToAdmin">Admin Panel</div>
-            <div class="mobile-link" @click="logout">Çıkış Yap</div>
-          </div>
-          <div v-else class="mobile-link" @click="showLoginDialog = true">
-            Giriş Yap
-          </div>
+            <div class="mobile-user">
+              <div class="mobile-link" @click="navigateToAdmin">
+                <v-icon size="16" class="mr-2">mdi-shield-account</v-icon>
+                Admin Panel
+              </div>
+              <div class="mobile-link" @click="logout">
+                <v-icon size="16" class="mr-2">mdi-logout</v-icon>
+                Çıkış Yap
+              </div>
+            </div>
+          </template>
         </div>
       </v-container>
     </nav>
   </header>
-
-  <!-- Login Dialog -->
-  <v-dialog v-model="showLoginDialog" max-width="400">
-    <v-card>
-      <v-card-title class="text-h5 text-center bg-primary text-white pa-4">
-        Giriş Yap
-      </v-card-title>
-      <v-card-text class="pa-6">
-        <v-text-field
-            v-model="loginForm.username"
-            label="Kullanıcı Adı"
-            prepend-inner-icon="mdi-account"
-            variant="outlined"
-            class="mb-4"
-        />
-        <v-text-field
-            v-model="loginForm.password"
-            label="Şifre"
-            type="password"
-            prepend-inner-icon="mdi-lock"
-            variant="outlined"
-        />
-        <v-alert v-if="loginError" type="error" class="mt-4">
-          {{ loginError }}
-        </v-alert>
-      </v-card-text>
-      <v-card-actions class="pa-6 pt-0">
-        <v-spacer />
-        <v-btn @click="showLoginDialog = false">İptal</v-btn>
-        <v-btn color="primary" @click="handleLogin">Giriş Yap</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -180,34 +153,7 @@ import { useAuthStore } from '@/store/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
-
-const showLoginDialog = ref(false)
 const mobileMenuOpen = ref(false)
-const isDark = ref(false)
-
-const loginForm = ref({
-  username: '',
-  password: '',
-})
-const loginError = ref('')
-
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  // Theme toggle fonksiyonu buraya eklenecek
-}
-
-const handleLogin = async () => {
-  loginError.value = ''
-  const success = await authStore.login(loginForm.value)
-
-  if (success) {
-    showLoginDialog.value = false
-    loginForm.value = { username: '', password: '' }
-    router.push({ name: 'admin' })
-  } else {
-    loginError.value = 'Kullanıcı adı veya şifre hatalı!'
-  }
-}
 
 const logout = () => {
   authStore.logout()
@@ -223,90 +169,183 @@ const navigateToAdmin = () => {
 
 <style scoped lang="scss">
 .header-container {
-  background-color: rgba(0, 0, 0, 0.42);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  // Yukarıdan aşağıya doğru saydamlaşan gradient
+  background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.85) 0%,
+          rgba(0, 0, 0, 0.75) 50%,
+          rgba(0, 0, 0, 0.5) 100%
+  );
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 1000; // Yüksek z-index ile her zaman en üstte
 }
 
 .nav-wrapper {
   .logo-link {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     text-decoration: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
 
     .logo-img {
       height: 60px;
       width: 60px;
-      border-radius: 8px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
     }
 
     .logo-text {
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.5rem; // Daha büyük
+      font-weight: 800;
       color: #FF9800;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
   }
 
   .nav-links {
-    gap: 32px;
+    gap: 40px; // Daha geniş aralık
 
     .nav-link {
-      color: #666;
+      color: rgba(255, 255, 255, 0.9);
       text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      padding: 8px 0;
+      font-weight: 600;
+      font-size: 1.125rem; // Daha büyük yazı
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 3px;
+        background: #FF9800;
+        transition: width 0.3s ease;
+      }
 
       &:hover {
         color: #FF9800;
+        background-color: rgba(255, 152, 0, 0.1);
+
+        &::after {
+          width: 80%;
+        }
       }
 
       &.active {
         color: #FF9800;
         font-weight: 700;
+        background-color: rgba(255, 152, 0, 0.15);
+
+        &::after {
+          width: 80%;
+        }
       }
     }
   }
 
   .theme-toggle {
-    color: #666;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
+      background-color: rgba(255, 152, 0, 0.2);
+      transform: rotate(20deg);
     }
   }
 
   .user-btn {
-    color: #666;
+    color: rgba(255, 255, 255, 0.9);
     text-transform: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
 
     &:hover {
       color: #FF9800;
+      background-color: rgba(255, 152, 0, 0.1);
+    }
+  }
+
+  .theme-toggle {
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: rgba(255, 152, 0, 0.2);
+      transform: rotate(20deg);
+    }
+  }
+
+  .user-btn {
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: #FF9800;
+      background-color: rgba(255, 152, 0, 0.1);
     }
   }
 
   .mobile-menu {
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(10px);
+
     .mobile-link {
       display: block;
-      padding: 12px 16px;
-      color: #666;
+      padding: 14px 20px;
+      color: rgba(255, 255, 255, 0.9);
       text-decoration: none;
       border-radius: 8px;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 1.05rem;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+        background-color: rgba(255, 152, 0, 0.2);
+        color: #FF9800;
+        transform: translateX(8px);
       }
 
       &.active {
         color: #FF9800;
         font-weight: 700;
-        background-color: rgba(255, 152, 0, 0.1);
+        background-color: rgba(255, 152, 0, 0.25);
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 960px) {
+  .nav-wrapper {
+    .logo-link {
+      .logo-img {
+        height: 50px;
+        width: 50px;
+      }
+
+      .logo-text {
+        font-size: 1.25rem;
       }
     }
   }
