@@ -34,7 +34,8 @@
                 <br>
 
                 <p class="text-body-1 reading-text">
-                  Paylaştığımız tahminler analizlerimizin ve futbola olan tutkumuzun bir ürünüdür , yatırım tavsiyesi değildir. Tahminlerimizin özverili bir çalışmanın ürünü olduğunu söyleyebiliriz ancak bu bir şans oyunu olduğundan kefil olamayız.</p>
+                  Paylaştığımız tahminler analizlerimizin ve futbola olan tutkumuzun bir ürünüdür , yatırım tavsiyesi değildir. Tahminlerimizin özverili bir çalışma sonucu ortaya çıktığını söyleyebiliriz ancak bu bir şans oyunu olduğundan kefil olamayız.
+                </p>
                 
                 <br>
 
