@@ -5,7 +5,10 @@ export interface Editor {
     avatar?: string
 }
 
-// Tahmin tipi
+// Tahmin sonucu tipi
+export type PredictionResult = 'won' | 'lost' | 'pending'
+
+// Tahmin tipi - result alanı eklendi
 export interface Prediction {
     id: string
     editorId: string
@@ -20,6 +23,7 @@ export interface Prediction {
     explanation: string
     matchDate: string
     createdAt: string
+    result?: PredictionResult // Yeni alan: 'won' | 'lost' | 'pending'
 }
 
 // Maç tipi

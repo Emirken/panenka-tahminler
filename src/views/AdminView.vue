@@ -1,6 +1,6 @@
 <template>
   <div class="admin-view">
-    <!-- Login Form - Giriş yapılmadıysa göster -->
+    <!-- Login Form -->
     <div v-if="!authStore.isAuthenticated" class="login-container">
       <v-row justify="center" align="center" style="min-height: 80vh;">
         <v-col cols="12" sm="10" md="8" lg="6" xl="4" class="px-2 px-md-4">
@@ -53,7 +53,7 @@
       </v-row>
     </div>
 
-    <!-- Admin Panel - Giriş yapıldıysa göster -->
+    <!-- Admin Panel -->
     <div v-else class="admin-panel py-6 py-md-12">
       <v-container class="content-wrapper px-2 px-md-4">
         <v-row>
@@ -61,12 +61,8 @@
             <div class="header-section mb-6 mb-md-8">
               <div class="header-content">
                 <div>
-                  <h1 class="admin-title mb-2">
-                    Admin Paneli
-                  </h1>
-                  <p class="admin-subtitle">
-                    Hoş geldin, {{ authStore.user?.fullName }}!
-                  </p>
+                  <h1 class="admin-title mb-2">Admin Paneli</h1>
+                  <p class="admin-subtitle">Hoş geldin, {{ authStore.user?.fullName }}!</p>
                 </div>
                 <v-btn
                     color="error"
@@ -143,17 +139,43 @@
                         </v-avatar>
                       </template>
 
-                      <v-list-item-title class="font-weight-bold mb-2 prediction-title">
-                        {{ prediction.homeTeam }} vs {{ prediction.awayTeam }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle class="prediction-subtitle">
-                        <v-chip size="x-small" color="primary" class="mr-2 mb-1">
-                          {{ prediction.league }}
-                        </v-chip>
-                        <div class="prediction-details">
-                          {{ prediction.prediction }} - Oran: {{ prediction.odds }}
+                      <div class="prediction-content">
+                        <v-list-item-title class="font-weight-bold mb-2 prediction-title">
+                          {{ prediction.homeTeam }} vs {{ prediction.awayTeam }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="prediction-subtitle">
+                          <v-chip size="x-small" color="primary" class="mr-2 mb-1">
+                            {{ prediction.league }}
+                          </v-chip>
+                          <div class="prediction-details">
+                            {{ prediction.prediction }} - Oran: {{ prediction.odds }}
+                          </div>
+                        </v-list-item-subtitle>
+
+                        <!-- Result Status Buttons -->
+                        <div class="result-buttons mt-3">
+                          <v-btn-toggle
+                              :model-value="prediction.result"
+                              @update:model-value="(val) => updateResult(prediction.id, val)"
+                              mandatory
+                              density="compact"
+                              color="primary"
+                          >
+                            <v-btn value="won" size="small" color="success">
+                              <v-icon size="16">mdi-check</v-icon>
+                              <span class="ml-1 d-none d-sm-inline">Tuttu</span>
+                            </v-btn>
+                            <v-btn value="lost" size="small" color="error">
+                              <v-icon size="16">mdi-close</v-icon>
+                              <span class="ml-1 d-none d-sm-inline">Tutmadı</span>
+                            </v-btn>
+                            <v-btn value="pending" size="small">
+                              <v-icon size="16">mdi-clock-outline</v-icon>
+                              <span class="ml-1 d-none d-sm-inline">Bekliyor</span>
+                            </v-btn>
+                          </v-btn-toggle>
                         </div>
-                      </v-list-item-subtitle>
+                      </div>
 
                       <template v-slot:append>
                         <v-btn
@@ -213,8 +235,6 @@
                             density="comfortable"
                             required
                             :disabled="!newPrediction.league"
-                            :hint="!newPrediction.league ? 'Önce liga seçin' : ''"
-                            persistent-hint
                             @update:model-value="onHomeTeamChange"
                         />
                         <v-text-field
@@ -224,7 +244,6 @@
                             variant="outlined"
                             density="comfortable"
                             required
-                            placeholder="Takım adını yazın"
                         />
                       </v-col>
 
@@ -238,8 +257,6 @@
                             density="comfortable"
                             required
                             :disabled="!newPrediction.league"
-                            :hint="!newPrediction.league ? 'Önce liga seçin' : ''"
-                            persistent-hint
                             @update:model-value="onAwayTeamChange"
                         />
                         <v-text-field
@@ -249,7 +266,6 @@
                             variant="outlined"
                             density="comfortable"
                             required
-                            placeholder="Takım adını yazın"
                         />
                       </v-col>
 
@@ -260,8 +276,6 @@
                             variant="outlined"
                             density="comfortable"
                             :readonly="newPrediction.league !== 'Diğer Ligler'"
-                            :hint="newPrediction.league === 'Diğer Ligler' ? 'Emoji ekleyin' : 'Otomatik dolar'"
-                            persistent-hint
                         />
                       </v-col>
 
@@ -272,8 +286,6 @@
                             variant="outlined"
                             density="comfortable"
                             :readonly="newPrediction.league !== 'Diğer Ligler'"
-                            :hint="newPrediction.league === 'Diğer Ligler' ? 'Emoji ekleyin' : 'Otomatik dolar'"
-                            persistent-hint
                         />
                       </v-col>
 
@@ -283,7 +295,6 @@
                             label="Tahmin"
                             variant="outlined"
                             density="comfortable"
-                            placeholder="2.5 Gol Üstü"
                             required
                         />
                       </v-col>
@@ -312,12 +323,7 @@
                       </v-col>
 
                       <v-col cols="12">
-                        <v-btn
-                            block
-                            color="primary"
-                            size="large"
-                            @click="addPrediction"
-                        >
+                        <v-btn block color="primary" size="large" @click="addPrediction">
                           <v-icon class="mr-2">mdi-content-save</v-icon>
                           Tahmini Kaydet
                         </v-btn>
@@ -344,7 +350,7 @@
                 </v-card-title>
                 <v-card-text class="pa-3 pa-md-6">
                   <v-alert type="info" class="mb-4" density="compact">
-                    Ana sayfada gösterilecek 1 tahmininizi seçin. Her editör sadece 1 tahmin seçebilir.
+                    Ana sayfada gösterilecek 1 tahmininizi seçin.
                   </v-alert>
 
                   <div v-if="myPredictions.length === 0" class="empty-state">
@@ -357,7 +363,7 @@
                         v-for="prediction in myPredictions"
                         :key="prediction.id"
                         class="pick-item mb-3 border rounded"
-                        :class="{ 'selected-pick': isMyPredictionSelected && mySelectedTodaysPick === prediction.id }"
+                        :class="{ 'selected-pick': mySelectedTodaysPick === prediction.id }"
                     >
                       <template v-slot:prepend>
                         <v-checkbox
@@ -465,7 +471,7 @@
     </div>
 
     <!-- Add Activity Dialog -->
-    <v-dialog v-model="showAddActivityDialog" max-width="600" class="dialog-mobile">
+    <v-dialog v-model="showAddActivityDialog" max-width="600">
       <v-card>
         <v-card-title class="bg-primary text-white pa-4">
           Yeni Etkinlik Ekle
@@ -473,10 +479,9 @@
         <v-card-text class="pa-4 pa-md-6">
           <v-text-field
               v-model="newActivity.icon"
-              label="İkon (Material Design Icon)"
+              label="İkon"
               variant="outlined"
               density="comfortable"
-              placeholder="mdi-trophy"
               class="mb-3"
           />
           <v-text-field
@@ -521,6 +526,7 @@ import { useAuthStore } from '@/store/auth'
 import { usePredictionsStore } from '@/store/predictions'
 import { useActivitiesStore } from '@/store/activities'
 import { leagueTeams, teamLogos } from '@/data/teams'
+import type { PredictionResult } from '@/types'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -541,27 +547,21 @@ const rules = {
   required: (value: string) => !!value || 'Bu alan zorunludur',
 }
 
-// Login Handler
 const handleLogin = async () => {
   const { valid } = await loginFormRef.value.validate()
-
   if (valid) {
     loginLoading.value = true
     loginError.value = ''
-
     const success = await authStore.login(loginForm.value)
-
     if (success) {
       loginForm.value = { username: '', password: '' }
     } else {
       loginError.value = 'Kullanıcı adı veya şifre hatalı!'
     }
-
     loginLoading.value = false
   }
 }
 
-// Logout Handler
 const handleLogout = () => {
   authStore.logout()
   router.push({ name: 'home' })
@@ -602,7 +602,6 @@ const newActivity = ref({
   description: '',
 })
 
-// SADECE KENDI TAHMİNLERİ
 const myPredictions = computed(() => {
   if (!authStore.user) return []
   return predictionsStore.predictionsByEditor(authStore.user.id)
@@ -610,10 +609,13 @@ const myPredictions = computed(() => {
 
 const activities = computed(() => activitiesStore.allActivities)
 
-// SADECE KENDI TAHMİNLERİNDEN SEÇİLENLER
 const mySelectedTodaysPick = computed(() => {
   if (!authStore.user) return null
   return predictionsStore.editorTodaysPick(authStore.user.id)
+})
+
+const isMyPredictionSelected = computed(() => {
+  return mySelectedTodaysPick.value !== null
 })
 
 const availableTeams = computed(() => {
@@ -635,6 +637,13 @@ const onHomeTeamChange = () => {
 const onAwayTeamChange = () => {
   const team = newPrediction.value.awayTeam
   newPrediction.value.awayLogo = teamLogos[team] || '⚽'
+}
+
+// Tahmin sonucunu güncelle
+const updateResult = (predictionId: string, result: PredictionResult) => {
+  predictionsStore.updatePredictionResult(predictionId, result)
+  successMessage.value = 'Tahmin sonucu güncellendi!'
+  showSuccessSnackbar.value = true
 }
 
 const addPrediction = () => {
@@ -680,28 +689,21 @@ const deletePrediction = (id: string) => {
 }
 
 const deletePredictionFromPicks = (id: string) => {
-  if (confirm('Bu tahmini silmek istediğinizden emin misiniz? Günün panenkasından da kaldırılacaktır.')) {
+  if (confirm('Bu tahmini silmek istediğinizden emin misiniz?')) {
     predictionsStore.deletePrediction(id)
     successMessage.value = 'Tahmin başarıyla silindi!'
     showSuccessSnackbar.value = true
   }
 }
 
-// SADECE KENDİ TAHMİNLERİNİ SEÇEBİLİR (MAX 1)
 const toggleMyTodaysPick = (predictionId: string) => {
   if (!authStore.user) return
-
   if (mySelectedTodaysPick.value === predictionId) {
-    // Seçimi kaldır
     predictionsStore.removeFromTodaysPicks(predictionId)
   } else {
-    // Yeni tahmin seç (eski seçim otomatik kaldırılacak)
     predictionsStore.addToTodaysPicks(predictionId, authStore.user.id)
   }
 }
-const isMyPredictionSelected = computed(() => {
-  return mySelectedTodaysPick.value !== null
-})
 
 const addActivity = () => {
   activitiesStore.addActivity({
@@ -710,12 +712,7 @@ const addActivity = () => {
     description: newActivity.value.description,
   })
 
-  newActivity.value = {
-    icon: '',
-    title: '',
-    description: '',
-  }
-
+  newActivity.value = { icon: '', title: '', description: '' }
   showAddActivityDialog.value = false
   successMessage.value = 'Etkinlik başarıyla eklendi!'
   showSuccessSnackbar.value = true
@@ -747,23 +744,6 @@ const deleteActivity = (id: string) => {
     @media (max-width: 600px) {
       border-radius: 8px !important;
     }
-
-    .demo-users {
-      .demo-user {
-        padding: 8px 0;
-        font-size: 0.875rem;
-        color: #666;
-
-        @media (max-width: 600px) {
-          font-size: 0.8rem;
-          padding: 6px 0;
-        }
-
-        strong {
-          color: #FF9800;
-        }
-      }
-    }
   }
 }
 
@@ -779,8 +759,6 @@ const deleteActivity = (id: string) => {
   }
 
   .header-section {
-    position: relative;
-
     .header-content {
       display: flex;
       justify-content: space-between;
@@ -798,10 +776,6 @@ const deleteActivity = (id: string) => {
       font-weight: bold;
       color: #FF9800;
 
-      @media (max-width: 960px) {
-        font-size: 1.75rem;
-      }
-
       @media (max-width: 600px) {
         font-size: 1.5rem;
       }
@@ -818,7 +792,6 @@ const deleteActivity = (id: string) => {
 
     .logout-btn {
       @media (max-width: 600px) {
-        align-self: flex-end;
         position: absolute;
         top: 0;
         right: 0;
@@ -827,28 +800,9 @@ const deleteActivity = (id: string) => {
   }
 
   .tabs-container {
-    width: 100%;
-
     .admin-tabs {
       border-radius: 12px;
       overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-
-      &::-webkit-scrollbar {
-        height: 6px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #FF9800;
-        border-radius: 10px;
-      }
 
       @media (max-width: 600px) {
         border-radius: 8px;
@@ -857,17 +811,10 @@ const deleteActivity = (id: string) => {
       .tab-item {
         min-width: auto !important;
         padding: 0 16px;
-        white-space: nowrap;
 
         @media (max-width: 600px) {
           padding: 0 8px;
           font-size: 0.85rem;
-        }
-
-        .tab-text {
-          @media (max-width: 400px) {
-            font-size: 0.75rem;
-          }
         }
       }
     }
@@ -888,18 +835,9 @@ const deleteActivity = (id: string) => {
 
     @media (max-width: 600px) {
       padding: 30px 15px;
-
-      .v-icon {
-        font-size: 48px !important;
-      }
-
-      .text-h6 {
-        font-size: 1rem !important;
-      }
     }
   }
 
-  // Predictions List
   .prediction-item {
     padding: 12px;
     transition: all 0.3s ease;
@@ -912,6 +850,11 @@ const deleteActivity = (id: string) => {
       background-color: rgba(255, 152, 0, 0.05);
     }
 
+    .prediction-content {
+      flex: 1;
+      width: 100%;
+    }
+
     .prediction-title {
       font-size: 1rem;
 
@@ -920,30 +863,28 @@ const deleteActivity = (id: string) => {
       }
     }
 
-    .prediction-subtitle {
-      @media (max-width: 600px) {
-        font-size: 0.8rem;
-      }
+    .result-buttons {
+      display: flex;
+      gap: 8px;
 
-      .prediction-details {
-        margin-top: 4px;
+      @media (max-width: 600px) {
+        .v-btn {
+          min-width: auto !important;
+          padding: 0 8px !important;
+        }
       }
     }
   }
 
-  // Today's Picks
   .picks-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    flex-wrap: wrap;
-    gap: 8px;
 
     .picks-title {
       display: flex;
       align-items: center;
-      flex: 1;
     }
   }
 
@@ -951,32 +892,9 @@ const deleteActivity = (id: string) => {
     padding: 12px;
     transition: all 0.3s ease;
 
-    @media (max-width: 600px) {
-      padding: 10px;
-    }
-
     &.selected-pick {
       background-color: rgba(76, 175, 80, 0.1);
       border-color: #4CAF50 !important;
-    }
-
-    .pick-title {
-      font-size: 0.95rem;
-      line-height: 1.4;
-
-      @media (max-width: 600px) {
-        font-size: 0.85rem;
-      }
-    }
-
-    .pick-subtitle {
-      @media (max-width: 600px) {
-        font-size: 0.75rem;
-      }
-
-      .pick-details {
-        margin-top: 4px;
-      }
     }
 
     .pick-actions {
@@ -986,70 +904,29 @@ const deleteActivity = (id: string) => {
 
       @media (max-width: 600px) {
         flex-direction: column;
-        gap: 6px;
       }
     }
   }
 
-  // Activities
   .activities-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    gap: 8px;
   }
 
   .activity-item {
     padding: 12px;
     transition: all 0.3s ease;
 
-    @media (max-width: 600px) {
-      padding: 10px;
-    }
-
     &:hover {
       background-color: rgba(255, 152, 0, 0.05);
     }
-
-    .activity-title {
-      font-size: 1rem;
-
-      @media (max-width: 600px) {
-        font-size: 0.9rem;
-      }
-    }
-
-    .activity-subtitle {
-      font-size: 0.875rem;
-      line-height: 1.4;
-
-      @media (max-width: 600px) {
-        font-size: 0.8rem;
-      }
-    }
   }
 }
 
-// Dialog Mobile Styles
-.dialog-mobile {
-  @media (max-width: 600px) {
-    .v-card {
-      margin: 16px;
-    }
-  }
-}
-
-// Border utility
 .border {
   border: 1px solid #e0e0e0;
-
-  @media (max-width: 600px) {
-    border-radius: 8px;
-  }
-}
-
-.rounded {
   border-radius: 12px;
 
   @media (max-width: 600px) {

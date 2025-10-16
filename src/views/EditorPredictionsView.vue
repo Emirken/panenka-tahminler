@@ -17,7 +17,7 @@
         </div>
       </section>
 
-      <!-- Editor Tabs -->
+      <!-- Editor Tabs with Results -->
       <section class="editor-tabs-section mb-8">
         <v-row justify="center">
           <v-col cols="12" sm="10" md="8" lg="6">
@@ -28,7 +28,35 @@
                   :class="['editor-tab', { 'active': selectedEditor === editor.value }]"
                   @click="selectedEditor = editor.value"
               >
-                {{ editor.label }}
+                <div class="editor-tab-content">
+                  <span class="editor-name">{{ editor.label }}</span>
+
+                  <!-- Son 5 Maç Sonuçları -->
+                  <div v-if="getLastFiveResults(editor.id).length > 0" class="results-row">
+                    <v-tooltip
+                        v-for="(result, index) in getLastFiveResults(editor.id)"
+                        :key="index"
+                        location="top"
+                    >
+                      <template v-slot:activator="{ props }">
+                        <div v-bind="props" class="result-icon">
+                          <v-icon
+                              :color="result.result === 'won' ? 'success' : 'error'"
+                              size="18"
+                          >
+                            {{ result.result === 'won' ? 'mdi-check-circle' : 'mdi-close-circle' }}
+                          </v-icon>
+                        </div>
+                      </template>
+                      <div class="result-tooltip">
+                        <div class="tooltip-match">{{ result.homeTeam }} vs {{ result.awayTeam }}</div>
+                        <div class="tooltip-date">{{ formatTooltipDate(result.matchDate) }}</div>
+                        <div class="tooltip-prediction">Tahmin: {{ result.prediction }}</div>
+                        <div class="tooltip-odds">Oran: {{ result.odds }}</div>
+                      </div>
+                    </v-tooltip>
+                  </div>
+                </div>
               </button>
             </div>
           </v-col>
@@ -100,6 +128,19 @@
                       <p class="odds-value">{{ prediction.odds.toFixed(2) }}</p>
                     </div>
                   </div>
+
+                  <!-- Result Badge (if available) -->
+                  <div v-if="prediction.result && prediction.result !== 'pending'" class="result-badge-container mt-3">
+                    <v-chip
+                        :color="prediction.result === 'won' ? 'success' : 'error'"
+                        size="small"
+                    >
+                      <v-icon size="16" class="mr-1">
+                        {{ prediction.result === 'won' ? 'mdi-check' : 'mdi-close' }}
+                      </v-icon>
+                      {{ prediction.result === 'won' ? 'Tuttu' : 'Tutmadı' }}
+                    </v-chip>
+                  </div>
                 </v-card-text>
               </v-card>
             </div>
@@ -133,9 +174,9 @@ const leagues = [
 ]
 
 const editors = [
-  { value: 'emircan', label: 'Emircan Adak' },
-  { value: 'berke', label: 'Berke Katıksız' },
-  { value: 'erman', label: 'Erman Şener' },
+  { value: 'emircan', id: '1', label: 'Emircan Adak' },
+  { value: 'berke', id: '2', label: 'Berke Katıksız' },
+  { value: 'erman', id: '3', label: 'Erman Şener' },
 ]
 
 const editorIdMap: Record<string, string> = {
@@ -155,7 +196,11 @@ const leagueNameMap: Record<string, string> = {
   'diger': 'Diğer Ligler',
 }
 
-// URL query parametresinden editörü al
+// Son 5 sonucu getir
+const getLastFiveResults = (editorId: string) => {
+  return predictionsStore.lastFiveResults(editorId)
+}
+
 onMounted(() => {
   const editorQuery = route.query.editor as string
   if (editorQuery && editorIdMap[editorQuery]) {
@@ -163,7 +208,6 @@ onMounted(() => {
   }
 })
 
-// URL değiştiğinde editörü güncelle
 watch(
     () => route.query.editor,
     (newEditor) => {
@@ -173,7 +217,6 @@ watch(
     }
 )
 
-// Store'dan verileri çek ve filtrele
 const filteredPredictions = computed(() => {
   const editorId = editorIdMap[selectedEditor.value]
   const leagueName = leagueNameMap[selectedLeague.value]
@@ -183,12 +226,23 @@ const filteredPredictions = computed(() => {
   )
 })
 
-// Tarih formatla
 const formatMatchDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('tr-TR', {
     day: 'numeric',
     month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+// Tooltip için daha kompakt tarih formatı
+const formatTooltipDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'short',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
@@ -207,7 +261,6 @@ const formatMatchDate = (dateString: string) => {
   margin: 0 auto;
 }
 
-// League Tabs Styling
 .league-tabs-section {
   .league-tabs-wrapper {
     background: white;
@@ -217,16 +270,16 @@ const formatMatchDate = (dateString: string) => {
     .league-tabs-scroll {
       display: flex;
       overflow-x: auto;
-      scrollbar-width: none; // Firefox
-      -ms-overflow-style: none; // IE/Edge
+      scrollbar-width: none;
+      -ms-overflow-style: none;
 
       &::-webkit-scrollbar {
-        display: none; // Chrome/Safari
+        display: none;
       }
 
       .league-tab {
         flex-shrink: 0;
-        padding: 16px 16px;
+        padding: 16px;
         border: none;
         border-bottom: 2px solid transparent;
         background: transparent;
@@ -251,7 +304,6 @@ const formatMatchDate = (dateString: string) => {
   }
 }
 
-// Editor Tabs Styling
 .editor-tabs-section {
   .editor-tabs-container {
     display: flex;
@@ -262,7 +314,7 @@ const formatMatchDate = (dateString: string) => {
 
     .editor-tab {
       flex: 1;
-      padding: 12px 16px;
+      padding: 12px;
       border: none;
       border-radius: 8px;
       background: transparent;
@@ -271,7 +323,10 @@ const formatMatchDate = (dateString: string) => {
       color: #666;
       cursor: pointer;
       transition: all 0.3s ease;
-      white-space: nowrap;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &:hover {
         background: rgba(255, 152, 0, 0.1);
@@ -282,8 +337,104 @@ const formatMatchDate = (dateString: string) => {
         background: #FF9800;
         color: white;
         font-weight: 700;
+
+        .results-row {
+          .result-icon {
+            background: rgba(255, 255, 255, 0.2);
+
+            .v-icon {
+              color: white !important;
+            }
+          }
+        }
+      }
+
+      .editor-tab-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+
+        .editor-name {
+          font-size: 0.875rem;
+          white-space: nowrap;
+
+          @media (max-width: 600px) {
+            font-size: 0.75rem;
+          }
+        }
+
+        .results-row {
+          display: flex;
+          gap: 4px;
+          justify-content: center;
+          flex-wrap: wrap;
+
+          .result-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+
+            &:hover {
+              transform: scale(1.15);
+            }
+
+            @media (max-width: 600px) {
+              width: 20px;
+              height: 20px;
+
+              .v-icon {
+                font-size: 14px !important;
+              }
+            }
+          }
+        }
       }
     }
+  }
+}
+
+.result-tooltip {
+  padding: 8px 12px;
+
+  .tooltip-match {
+    font-weight: 700;
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .tooltip-date {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &::before {
+      content: '📅';
+      font-size: 0.7rem;
+    }
+  }
+
+  .tooltip-prediction {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 4px;
+  }
+
+  .tooltip-odds {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
   }
 }
 
@@ -406,6 +557,12 @@ const formatMatchDate = (dateString: string) => {
           text-align: right;
         }
       }
+
+      .result-badge-container {
+        text-align: center;
+        padding-top: 12px;
+        border-top: 1px solid #f0f0f0;
+      }
     }
   }
 }
@@ -414,15 +571,23 @@ const formatMatchDate = (dateString: string) => {
 @media (max-width: 600px) {
   .league-tabs-scroll {
     .league-tab {
-      padding: 12px 12px !important;
+      padding: 12px !important;
       font-size: 0.75rem !important;
     }
   }
 
   .editor-tabs-container {
+    flex-direction: column;
+
     .editor-tab {
-      font-size: 0.75rem !important;
+      min-height: 70px !important;
       padding: 10px 8px !important;
+
+      .editor-tab-content {
+        .editor-name {
+          font-size: 0.75rem !important;
+        }
+      }
     }
   }
 

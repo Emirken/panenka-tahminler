@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { Prediction } from '@/types'
+import { Prediction, PredictionResult } from '@/types'
 
 interface PredictionsState {
     predictions: Prediction[]
-    todaysPicks: string[] // Günün panenkası seçilen tahmin ID'leri (her admindan max 1 tane)
+    todaysPicks: string[]
 }
 
 export const usePredictionsStore = defineStore('predictions', {
@@ -16,7 +16,10 @@ export const usePredictionsStore = defineStore('predictions', {
         allPredictions: (state) => state.predictions,
 
         predictionsByEditor: (state) => (editorId: string) => {
-            return state.predictions.filter(p => p.editorId === editorId)
+            // Editöre ait tahminleri maç tarihine göre sırala (en yeni en üstte)
+            return [...state.predictions]
+                .filter(p => p.editorId === editorId)
+                .sort((a, b) => new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime())
         },
 
         latestPredictions: (state) => {
@@ -25,14 +28,12 @@ export const usePredictionsStore = defineStore('predictions', {
                 .slice(0, 10)
         },
 
-        // Günün Panenkası için seçilen tahminler
         todaysPicksPredictions: (state) => {
             return state.todaysPicks
                 .map(id => state.predictions.find(p => p.id === id))
                 .filter(p => p !== undefined) as Prediction[]
         },
 
-        // Belirli bir adminın seçtiği günün panenkası tahmini
         editorTodaysPick: (state) => (editorId: string) => {
             const editorPredictions = state.predictions.filter(p => p.editorId === editorId)
             const editorPickId = state.todaysPicks.find(pickId =>
@@ -43,11 +44,32 @@ export const usePredictionsStore = defineStore('predictions', {
     },
 
     actions: {
+        // Son 5 sonuçlanmış tahmini getir (editöre göre)
+        lastFiveResults(editorId: string) {
+            return [...this.predictions]
+                .filter(p => p.editorId === editorId && p.result && p.result !== 'pending')
+                .sort((a, b) => new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime())
+                .slice(0, 5)
+        },
+
+        // Editörün başarı oranı
+        editorSuccessRate(editorId: string) {
+            const editorPredictions = this.predictions.filter(
+                p => p.editorId === editorId && p.result && p.result !== 'pending'
+            )
+
+            if (editorPredictions.length === 0) return 0
+
+            const wonCount = editorPredictions.filter(p => p.result === 'won').length
+            return Math.round((wonCount / editorPredictions.length) * 100)
+        },
+
         addPrediction(prediction: Omit<Prediction, 'id' | 'createdAt'>) {
             const newPrediction: Prediction = {
                 ...prediction,
                 id: Date.now().toString(),
                 createdAt: new Date().toISOString(),
+                result: 'pending', // Varsayılan olarak beklemede
             }
             this.predictions.unshift(newPrediction)
             this.savePredictions()
@@ -61,15 +83,22 @@ export const usePredictionsStore = defineStore('predictions', {
             }
         },
 
+        // Tahmin sonucunu güncelle
+        updatePredictionResult(id: string, result: PredictionResult) {
+            const index = this.predictions.findIndex(p => p.id === id)
+            if (index !== -1) {
+                this.predictions[index].result = result
+                this.savePredictions()
+            }
+        },
+
         deletePrediction(id: string) {
             this.predictions = this.predictions.filter(p => p.id !== id)
             this.todaysPicks = this.todaysPicks.filter(pickId => pickId !== id)
             this.savePredictions()
         },
 
-        // Günün panenkasına tahmin ekle (Her admin sadece 1 tahmin seçebilir)
         addToTodaysPicks(predictionId: string, editorId: string) {
-            // Önce bu adminin daha önce seçtiği tahmini bul ve kaldır
             const editorPredictions = this.predictions.filter(p => p.editorId === editorId)
             const oldPickId = this.todaysPicks.find(pickId =>
                 editorPredictions.some(p => p.id === pickId)
@@ -79,7 +108,6 @@ export const usePredictionsStore = defineStore('predictions', {
                 this.todaysPicks = this.todaysPicks.filter(id => id !== oldPickId)
             }
 
-            // Yeni tahmini ekle (eğer zaten yoksa)
             if (!this.todaysPicks.includes(predictionId)) {
                 this.todaysPicks.push(predictionId)
             }
@@ -87,7 +115,6 @@ export const usePredictionsStore = defineStore('predictions', {
             this.savePredictions()
         },
 
-        // Günün panenkasından tahmin çıkar
         removeFromTodaysPicks(predictionId: string) {
             this.todaysPicks = this.todaysPicks.filter(id => id !== predictionId)
             this.savePredictions()
