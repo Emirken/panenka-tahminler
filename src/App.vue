@@ -38,36 +38,42 @@ onMounted(() => {
   background-color: #FFF8E1 !important;
   min-height: calc(100vh - 200px);
   width: 100%;
-  overflow-x: hidden; // Yan scroll'u engelle
+  overflow-x: hidden;
 }
 
-// İçerik container'ı
+// İçerik container'ı - TAM ORTALAMA
 .main-style{
   width: 100%;
-  max-width: 100vw; // Viewport genişliğini aşmasın
+  max-width: 100vw;
 
-  // Desktop - yan marginler
-  margin-left: 10%;
-  margin-right: 10%;
+  // Desktop - tam ortada, simetrik
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 10%;
+  padding-right: 10%;
 
-  // Tablet - daha az margin
-  @media (max-width: 1264px) {
-    margin-left: 5%;
-    margin-right: 5%;
+  // Büyük ekranlar
+  @media (min-width: 1920px) {
+    padding-left: 15%;
+    padding-right: 15%;
   }
 
-  // Mobil - minimal margin
+  // Tablet - daha az padding
+  @media (max-width: 1264px) {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  // Mobil - minimal padding
   @media (max-width: 960px) {
-    margin-left: 0;
-    margin-right: 0;
-    padding: 0;
+    padding-left: 2%;
+    padding-right: 2%;
   }
 
   // Çok küçük ekranlar
   @media (max-width: 600px) {
-    margin-left: 0;
-    margin-right: 0;
-    padding: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
