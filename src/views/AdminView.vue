@@ -65,7 +65,7 @@
                     Admin Paneli
                   </h1>
                   <p class="admin-subtitle">
-                    Hoş geldin, {{ authStore.user?.username }}!
+                    Hoş geldin, {{ authStore.user?.fullName }}!
                   </p>
                 </div>
                 <v-btn
