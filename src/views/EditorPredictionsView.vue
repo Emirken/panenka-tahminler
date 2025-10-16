@@ -58,23 +58,27 @@
 
       <!-- Predictions Content -->
       <section class="predictions-content">
-        <v-row justify="center">
-          <v-col cols="12" lg="10" xl="8">
-            <!-- Empty State -->
-            <div v-if="editorPredictions.length === 0" class="empty-state">
-              <v-icon size="80" color="grey-lighten-1">mdi-calendar-remove</v-icon>
-              <p class="text-h6 text-grey mt-4">
-                Bu editör henüz tahmin eklememiş.
-              </p>
-            </div>
+        <v-container fluid>
+          <!-- Empty State -->
+          <div v-if="editorPredictions.length === 0" class="empty-state">
+            <v-icon size="80" color="grey-lighten-1">mdi-calendar-remove</v-icon>
+            <p class="text-h6 text-grey mt-4">
+              Bu editör henüz tahmin eklememiş.
+            </p>
+          </div>
 
-            <!-- Predictions List -->
-            <div v-else class="predictions-list">
+          <!-- Predictions Grid -->
+          <v-row v-else>
+            <v-col
+                cols="12"
+                md="6"
+                lg="4"
+                v-for="prediction in editorPredictions"
+                :key="prediction.id"
+            >
               <v-card
-                  v-for="prediction in editorPredictions"
-                  :key="prediction.id"
                   elevation="4"
-                  class="prediction-card mb-6"
+                  class="prediction-card h-100"
               >
                 <v-card-text class="pa-6">
                   <!-- Header -->
@@ -135,9 +139,9 @@
                   </div>
                 </v-card-text>
               </v-card>
-            </div>
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
       </section>
     </div>
   </div>
@@ -377,119 +381,125 @@ const formatTooltipDate = (dateString: string) => {
     padding: 80px 20px;
   }
 
-  .predictions-list {
-    .prediction-card {
-      border-radius: 12px !important;
-      transition: all 0.3s ease;
+  .h-100 {
+    height: 100%;
+  }
 
-      &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  .prediction-card {
+    border-radius: 12px !important;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .prediction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+
+      .match-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 4px;
       }
 
-      .prediction-header {
+      .match-date {
+        font-size: 0.7rem;
+        color: #999;
+        margin: 4px 0 0 0;
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 16px;
+        align-items: center;
+      }
+    }
 
-        .match-title {
-          font-size: 1.25rem;
-          font-weight: 700;
+    .teams-display {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+
+      .team-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+
+        .team-logo {
+          font-size: 1.5rem;
+        }
+
+        .team-name {
+          font-size: 0.75rem;
+          font-weight: 600;
           color: #333;
+          text-align: center;
+        }
+      }
+
+      .vs-text {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #999;
+      }
+    }
+
+    .prediction-explanation {
+      font-size: 0.8rem;
+      color: #666;
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .prediction-box {
+      background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .prediction-info,
+      .odds-info {
+        .label {
+          font-size: 0.7rem;
+          color: #666;
           margin-bottom: 4px;
         }
 
-        .match-date {
-          font-size: 0.75rem;
-          color: #999;
-          margin: 4px 0 0 0;
-          display: flex;
-          align-items: center;
-        }
-      }
-
-      .teams-display {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 16px;
-        background: #f9f9f9;
-        border-radius: 8px;
-
-        .team-info {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-
-          .team-logo {
-            font-size: 2rem;
-          }
-
-          .team-name {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #333;
-          }
-        }
-
-        .vs-text {
-          font-size: 1.25rem;
+        .value {
+          font-size: 1rem;
           font-weight: 700;
-          color: #999;
+          color: #FF9800;
+          margin: 0;
+        }
+
+        .odds-value {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #FBBF24;
+          margin: 0;
         }
       }
 
-      .prediction-explanation {
-        font-size: 0.875rem;
-        color: #666;
-        font-style: italic;
-        line-height: 1.6;
-        margin-bottom: 16px;
+      .odds-info {
+        text-align: right;
       }
+    }
 
-      .prediction-box {
-        background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
-        padding: 16px;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .prediction-info,
-        .odds-info {
-          .label {
-            font-size: 0.75rem;
-            color: #666;
-            margin-bottom: 4px;
-          }
-
-          .value {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: #FF9800;
-            margin: 0;
-          }
-
-          .odds-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #FBBF24;
-            margin: 0;
-          }
-        }
-
-        .odds-info {
-          text-align: right;
-        }
-      }
-
-      .result-badge-container {
-        text-align: center;
-        padding-top: 12px;
-        border-top: 1px solid #f0f0f0;
-      }
+    .result-badge-container {
+      text-align: center;
+      padding-top: 12px;
+      border-top: 1px solid #f0f0f0;
     }
   }
 }
@@ -520,20 +530,44 @@ const formatTooltipDate = (dateString: string) => {
     .teams-display {
       flex-direction: column;
       gap: 12px;
+      padding: 12px 8px;
 
       .vs-text {
         margin: 8px 0;
+      }
+
+      .team-info {
+        .team-logo {
+          font-size: 1.25rem;
+        }
+
+        .team-name {
+          font-size: 0.7rem;
+        }
       }
     }
 
     .prediction-box {
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       text-align: center;
+      padding: 10px;
 
       .odds-info {
         text-align: center !important;
       }
+
+      .prediction-info .value {
+        font-size: 0.9rem;
+      }
+
+      .odds-info .odds-value {
+        font-size: 1.25rem;
+      }
+    }
+
+    .prediction-explanation {
+      font-size: 0.75rem;
     }
   }
 }

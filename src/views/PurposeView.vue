@@ -9,11 +9,7 @@
               Amacımız
             </h1>
             <p class="text-h5 mb-4 fade-in">
-              Kaliteli İçerik, Şeffaf Analiz, Güvenilir Tahmin
-            </p>
-            <p class="text-h6 mb-0 fade-in text-grey">
-              Panenka Tahminler olarak misyonumuz, futbolseverlere ve bahis tutkunlarına
-              en doğru ve güvenilir tahminleri sunmaktır.
+              Kaliteli İçerik, Objektif Analiz
             </p>
           </v-col>
         </v-row>
@@ -28,11 +24,13 @@
             <v-card elevation="4" class="purpose-card">
               <v-card-text class="pa-8">
                 <p class="text-body-1 purpose-text mb-8">
-                  "Panenka tahminler" ailesine hoş geldin. Bilindiği üzere futbol var olduğundan beri kitleleri peşinden sürükleyen, içinde heyecan, mücadele, taktik, zeka, yetenek gibi birçok dinamikleri içinde barındıran keyifli bir spor. Kimi aktif sporcu, kimi teknik direktör, kimi kulüp yöneticisi, kimi taraftar, kimi sadece bir spor seyircisi, kimi için yaşam amacı. Bir gerçek çok nettir ki futbol diğer spor dallarından farklı olarak halkın her kesiminden kişilerin yorumunun olduğu bir spordur.
+                  "Panenka tahminler" ailesine hoş geldin. Bilindiği üzere futbol var olduğundan beri kitleleri peşinden
+                  sürükleyen, içinde heyecan, mücadele, taktik, zeka, yetenek gibi birçok dinamikleri içinde barındıran keyifli
+                  bir spor. Kimi aktif sporcu, kimi teknik direktör, kimi kulüp yöneticisi, kimi taraftar, kimi sadece bir
+                  spor seyircisi, kimi için yaşam amacı. Bir gerçek çok nettir ki futbol diğer spor dallarından farklı
+                  olarak halkın her kesiminden kişilerin yorumunun olduğu bir spordur.Kimi içinse tahminlerde bulunup müsabakasına heyecan katma isteğidir.
                 </p>
-                <p class="text-body-1 purpose-text mb-8">
-                  Kimi içinse tahminlerde bulunup müsabakasına heyecan katma isteğidir.
-                </p>
+
                 <p class="text-body-1 purpose-text">
                   Panenka tahminler ailesi olarak bizler de futbol müsabakalarına tahminlerde bulunmaktan keyif alıyor, doğru analiz için detaylara dikkat ediyor ve haftanın belirli günleri oynanacak olan maçlar hakkındaki yorumlarımızı siz kıymetli misafirlerimiz ile paylaşıyoruz. Paylaştığımız tahminler, tamamen kendi analizlerimizin ve futbola olan tutkumuzun bir ürünüdür. Tahminlermizi takip edebilir, kendi yorumunla birleştirip değerlendirebilirsin. Faydalan, düşün, keyif al !
                 </p>

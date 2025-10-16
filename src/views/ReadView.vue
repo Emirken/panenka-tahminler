@@ -8,12 +8,6 @@
             <h1 class="text-h2 font-weight-bold text-primary mb-4 fade-in">
               Mutlaka Oku
             </h1>
-            <p class="text-h6 mb-4 fade-in">
-              Futbol bahis dünyasında bilgi güçtür!
-            </p>
-            <p class="text-body-1 mb-0 fade-in">
-              Size bahis stratejileri, analiz teknikleri ve futbol hakkında faydalı bilgiler sunuyoruz.
-            </p>
           </v-col>
         </v-row>
       </div>
@@ -26,14 +20,11 @@
           <v-col cols="12" md="10" lg="8">
             <v-card elevation="4" class="content-card">
               <v-card-text class="pa-8">
-                <p class="text-body-1 reading-text">
-                  Panenka tahminler ailesi olarak paylaştığımız tahminler sadece bir öngörüdür ve eğlence amaçlıdır. Asla yatırım tavsiyesi değildir. Bizim sizlerden isteğimiz şudur ki içeriğinde analiz dahi barındırsa da spor bahislerinin günün sonunda bir şans oyunu olduğunu unutmamanız, bütçenizi zorlayacak şekilde oynayarak siz ve sevdiklerinizi üzmemenizdir.
-                </p>
 
                 <br>
 
                 <p class="text-body-1 reading-text">
-                  Paylaştığımız tahminler analizlerimizin ve futbola olan tutkumuzun bir ürünüdür , yatırım tavsiyesi değildir. Tahminlerimizin özverili bir çalışma sonucu ortaya çıktığını söyleyebiliriz ancak bu bir şans oyunu olduğundan kefil olamayız.
+                  Panenka Tahminler Ailesi olarak paylaştığımız tahminler yatırım tavsiyesi değildir. Tahminlerimizin özverili bir çalışma sonucu ortaya çıktığını söyleyebiliriz ancak bunun bir şans oyunu olduğu unutulmamalıdır.
                 </p>
                 
                 <br>

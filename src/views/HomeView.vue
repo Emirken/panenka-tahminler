@@ -27,7 +27,7 @@
         </h2>
 
         <p class="section-description text-center mb-6 mb-md-8 px-4">
-          Editörlerimizin o gün için olan en güvendiği maçların listesidir.
+          Editörlerimiz gün özelinde en güvendikleri bir tahminini 'Günün Panenkası' olarak sizlere sunuyor
         </p>
 
         <v-container fluid class="px-2 px-md-4">
@@ -94,7 +94,7 @@
                     class=" cta-button"
                     @click="goToEditorPredictions(prediction.editorId)"
                 >
-                  Editörün Diğer Tahminleri
+                  <span class="text-white">Editörün Diğer Tahminleri</span>
                 </v-btn>
               </v-card>
             </v-col>
