@@ -118,7 +118,7 @@
                 @click="mobileMenuOpen = false"
             >
               <v-icon size="20" class="mr-2">mdi-book-open-page-variant</v-icon>
-              Oku
+              Mutlaka Oku
             </router-link>
             <router-link
                 to="/amacimiz"
