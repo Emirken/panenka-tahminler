@@ -88,7 +88,6 @@
                   <div class="prediction-header">
                     <div>
                       <h3 class="match-title">{{ prediction.homeTeam }} - {{ prediction.awayTeam }}</h3>
-                      <p class="editor-name">Yorumcu: {{ prediction.editorName }}</p>
                       <p class="match-date">
                         <v-icon size="16" class="mr-1">mdi-calendar</v-icon>
                         {{ formatMatchDate(prediction.matchDate) }}

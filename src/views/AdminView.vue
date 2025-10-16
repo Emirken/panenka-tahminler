@@ -144,13 +144,22 @@
                           {{ prediction.homeTeam }} vs {{ prediction.awayTeam }}
                         </v-list-item-title>
                         <v-list-item-subtitle class="prediction-subtitle">
-                          <v-chip size="x-small" color="primary" class="mr-2 mb-1">
-                            {{ prediction.league }}
-                          </v-chip>
-                          <div class="prediction-details">
-                            {{ prediction.prediction }} - Oran: {{ prediction.odds }}
+                          <div class="mb-2">
+                            <v-chip size="x-small" color="primary" class="mr-2">
+                              {{ prediction.league }}
+                            </v-chip>
+                            <span class="text-caption text-grey">
+                              {{ formatPredictionDate(prediction.matchDate) }}
+                            </span>
+                          </div>
+
+                        </v-list-item-subtitle>
+                        <v-list-item-subtitle class="prediction-subtitle">
+                          <div >
+                            <strong>Tahmin:</strong> {{ prediction.prediction }} | <strong>Oran:</strong> {{ prediction.odds }}
                           </div>
                         </v-list-item-subtitle>
+
 
                         <!-- Result Status Buttons -->
                         <div class="result-buttons mt-3">
@@ -392,8 +401,10 @@
                         <v-chip size="x-small" color="primary" class="mr-2 mb-1">
                           {{ prediction.league }}
                         </v-chip>
-                        <div class="pick-details">
-                          {{ prediction.prediction }} - Oran: {{ prediction.odds }}
+                      </v-list-item-subtitle>
+                      <v-list-item-subtitle class="prediction-subtitle">
+                        <div >
+                          <strong>Tahmin:</strong> {{ prediction.prediction }} | <strong>Oran:</strong> {{ prediction.odds }}
                         </div>
                       </v-list-item-subtitle>
 
@@ -672,6 +683,8 @@
 </template>
 
 <script setup lang="ts">
+// src/views/AdminView.vue - <script setup> kısmı - TAM VERSİYON
+
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
@@ -792,6 +805,17 @@ const availableTeams = computed(() => {
 const editAvailableTeams = computed(() => {
   return leagueTeams[editingPrediction.value.league] || []
 })
+
+// Tarih formatla (admin paneli için)
+const formatPredictionDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 
 const onLeagueChange = () => {
   newPrediction.value.homeTeam = ''
@@ -993,6 +1017,7 @@ const deleteActivity = async (id: string) => {
       showSuccessSnackbar.value = true
     }
   }
+
 }
 </script>
 
