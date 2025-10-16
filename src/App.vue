@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Header />
-    <v-main class="main-style" >
+    <v-main class="main-style">
       <router-view />
     </v-main>
     <Footer />
@@ -20,10 +20,14 @@ const authStore = useAuthStore()
 const predictionsStore = usePredictionsStore()
 const activitiesStore = useActivitiesStore()
 
-onMounted(() => {
+onMounted(async () => {
   authStore.checkAuth()
-  predictionsStore.loadPredictions()
-  activitiesStore.loadActivities()
+
+  // Firebase'den verileri yükle (async)
+  await Promise.all([
+    predictionsStore.loadPredictions(),
+    activitiesStore.loadActivities()
+  ])
 })
 </script>
 

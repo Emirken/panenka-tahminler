@@ -1,22 +1,37 @@
+// src/store/predictions.ts - Firebase ile güncellenmiş versiyon
+
 import { defineStore } from 'pinia'
 import { Prediction, PredictionResult } from '@/types'
+import {
+    collection,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc,
+    getDocs,
+    query,
+    where,
+    orderBy
+} from 'firebase/firestore'
+import { db } from '@/firebase/config'
 
 interface PredictionsState {
     predictions: Prediction[]
     todaysPicks: string[]
+    loading: boolean
 }
 
 export const usePredictionsStore = defineStore('predictions', {
     state: (): PredictionsState => ({
         predictions: [],
         todaysPicks: [],
+        loading: false,
     }),
 
     getters: {
         allPredictions: (state) => state.predictions,
 
         predictionsByEditor: (state) => (editorId: string) => {
-            // Editöre ait tahminleri maç tarihine göre sırala (en yeni en üstte)
             return [...state.predictions]
                 .filter(p => p.editorId === editorId)
                 .sort((a, b) => new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime())
@@ -44,7 +59,31 @@ export const usePredictionsStore = defineStore('predictions', {
     },
 
     actions: {
-        // Son 5 sonuçlanmış tahmini getir (editöre göre)
+        // Firestore'dan tüm tahminleri yükle
+        async loadPredictions() {
+            this.loading = true
+            try {
+                const predictionsRef = collection(db, 'predictions')
+                const q = query(predictionsRef, orderBy('createdAt', 'desc'))
+                const querySnapshot = await getDocs(q)
+
+                this.predictions = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                } as Prediction))
+
+                // Today's picks'i yükle
+                const picksRef = collection(db, 'todaysPicks')
+                const picksSnapshot = await getDocs(picksRef)
+                this.todaysPicks = picksSnapshot.docs.map(doc => doc.data().predictionId)
+            } catch (error) {
+                console.error('Tahminler yüklenirken hata:', error)
+            } finally {
+                this.loading = false
+            }
+        },
+
+        // Son 5 sonuçlanmış tahmini getir
         lastFiveResults(editorId: string) {
             return [...this.predictions]
                 .filter(p => p.editorId === editorId && p.result && p.result !== 'pending')
@@ -64,77 +103,122 @@ export const usePredictionsStore = defineStore('predictions', {
             return Math.round((wonCount / editorPredictions.length) * 100)
         },
 
-        addPrediction(prediction: Omit<Prediction, 'id' | 'createdAt'>) {
-            const newPrediction: Prediction = {
-                ...prediction,
-                id: Date.now().toString(),
-                createdAt: new Date().toISOString(),
-                result: 'pending', // Varsayılan olarak beklemede
+        // Yeni tahmin ekle
+        async addPrediction(prediction: Omit<Prediction, 'id' | 'createdAt'>) {
+            try {
+                const newPrediction = {
+                    ...prediction,
+                    createdAt: new Date().toISOString(),
+                    result: 'pending' as PredictionResult,
+                }
+
+                const docRef = await addDoc(collection(db, 'predictions'), newPrediction)
+
+                this.predictions.unshift({
+                    id: docRef.id,
+                    ...newPrediction
+                })
+
+                return true
+            } catch (error) {
+                console.error('Tahmin eklenirken hata:', error)
+                return false
             }
-            this.predictions.unshift(newPrediction)
-            this.savePredictions()
         },
 
-        updatePrediction(id: string, updates: Partial<Prediction>) {
-            const index = this.predictions.findIndex(p => p.id === id)
-            if (index !== -1) {
-                this.predictions[index] = { ...this.predictions[index], ...updates }
-                this.savePredictions()
+        // Tahmini güncelle
+        async updatePrediction(id: string, updates: Partial<Prediction>) {
+            try {
+                const predictionRef = doc(db, 'predictions', id)
+                await updateDoc(predictionRef, updates)
+
+                const index = this.predictions.findIndex(p => p.id === id)
+                if (index !== -1) {
+                    this.predictions[index] = { ...this.predictions[index], ...updates }
+                }
+
+                return true
+            } catch (error) {
+                console.error('Tahmin güncellenirken hata:', error)
+                return false
             }
         },
 
         // Tahmin sonucunu güncelle
-        updatePredictionResult(id: string, result: PredictionResult) {
-            const index = this.predictions.findIndex(p => p.id === id)
-            if (index !== -1) {
-                this.predictions[index].result = result
-                this.savePredictions()
+        async updatePredictionResult(id: string, result: PredictionResult) {
+            return await this.updatePrediction(id, { result })
+        },
+
+        // Tahmini sil
+        async deletePrediction(id: string) {
+            try {
+                await deleteDoc(doc(db, 'predictions', id))
+
+                this.predictions = this.predictions.filter(p => p.id !== id)
+
+                // Today's picks'ten de kaldır
+                await this.removeFromTodaysPicks(id)
+
+                return true
+            } catch (error) {
+                console.error('Tahmin silinirken hata:', error)
+                return false
             }
         },
 
-        deletePrediction(id: string) {
-            this.predictions = this.predictions.filter(p => p.id !== id)
-            this.todaysPicks = this.todaysPicks.filter(pickId => pickId !== id)
-            this.savePredictions()
-        },
+        // Günün panenkasına ekle
+        async addToTodaysPicks(predictionId: string, editorId: string) {
+            try {
+                // Önce bu editörün eski seçimini kaldır
+                const editorPredictions = this.predictions.filter(p => p.editorId === editorId)
+                const oldPickId = this.todaysPicks.find(pickId =>
+                    editorPredictions.some(p => p.id === pickId)
+                )
 
-        addToTodaysPicks(predictionId: string, editorId: string) {
-            const editorPredictions = this.predictions.filter(p => p.editorId === editorId)
-            const oldPickId = this.todaysPicks.find(pickId =>
-                editorPredictions.some(p => p.id === pickId)
-            )
+                if (oldPickId) {
+                    await this.removeFromTodaysPicks(oldPickId)
+                }
 
-            if (oldPickId) {
-                this.todaysPicks = this.todaysPicks.filter(id => id !== oldPickId)
+                // Yeni seçimi ekle
+                await addDoc(collection(db, 'todaysPicks'), {
+                    predictionId,
+                    editorId,
+                    addedAt: new Date().toISOString()
+                })
+
+                if (!this.todaysPicks.includes(predictionId)) {
+                    this.todaysPicks.push(predictionId)
+                }
+
+                return true
+            } catch (error) {
+                console.error('Günün panenkasına eklenirken hata:', error)
+                return false
             }
+        },
 
-            if (!this.todaysPicks.includes(predictionId)) {
-                this.todaysPicks.push(predictionId)
+        // Günün panenkasından kaldır
+        async removeFromTodaysPicks(predictionId: string) {
+            try {
+                const picksRef = collection(db, 'todaysPicks')
+                const q = query(picksRef, where('predictionId', '==', predictionId))
+                const querySnapshot = await getDocs(q)
+
+                const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref))
+                await Promise.all(deletePromises)
+
+                this.todaysPicks = this.todaysPicks.filter(id => id !== predictionId)
+
+                return true
+            } catch (error) {
+                console.error('Günün panenkasından kaldırılırken hata:', error)
+                return false
             }
-
-            this.savePredictions()
         },
 
-        removeFromTodaysPicks(predictionId: string) {
-            this.todaysPicks = this.todaysPicks.filter(id => id !== predictionId)
-            this.savePredictions()
-        },
-
+        // LocalStorage metodları artık kullanılmıyor (Firebase kullanıyoruz)
         savePredictions() {
-            localStorage.setItem('predictions', JSON.stringify(this.predictions))
-            localStorage.setItem('todaysPicks', JSON.stringify(this.todaysPicks))
-        },
-
-        loadPredictions() {
-            const stored = localStorage.getItem('predictions')
-            if (stored) {
-                this.predictions = JSON.parse(stored)
-            }
-
-            const storedPicks = localStorage.getItem('todaysPicks')
-            if (storedPicks) {
-                this.todaysPicks = JSON.parse(storedPicks)
-            }
+            // Firebase kullanıldığı için bu metod artık boş
         },
     },
 })

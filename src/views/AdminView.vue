@@ -845,9 +845,9 @@ const editPrediction = (prediction: any) => {
   showEditDialog.value = true
 }
 
-// Düzenlemeyi kaydet
-const saveEdit = () => {
-  predictionsStore.updatePrediction(editingPrediction.value.id, {
+// Düzenlemeyi kaydet - ASYNC
+const saveEdit = async () => {
+  const success = await predictionsStore.updatePrediction(editingPrediction.value.id, {
     league: editingPrediction.value.league,
     homeTeam: editingPrediction.value.homeTeam,
     awayTeam: editingPrediction.value.awayTeam,
@@ -859,9 +859,14 @@ const saveEdit = () => {
     matchDate: editingPrediction.value.matchDate,
   })
 
-  showEditDialog.value = false
-  successMessage.value = 'Tahmin başarıyla güncellendi!'
-  showSuccessSnackbar.value = true
+  if (success) {
+    showEditDialog.value = false
+    successMessage.value = 'Tahmin başarıyla güncellendi!'
+    showSuccessSnackbar.value = true
+  } else {
+    successMessage.value = 'Hata! Tahmin güncellenemedi.'
+    showSuccessSnackbar.value = true
+  }
 }
 
 // Düzenlemeyi iptal et
@@ -881,17 +886,20 @@ const cancelEdit = () => {
   }
 }
 
-// Tahmin sonucunu güncelle
-const updateResult = (predictionId: string, result: PredictionResult) => {
-  predictionsStore.updatePredictionResult(predictionId, result)
-  successMessage.value = 'Tahmin sonucu güncellendi!'
-  showSuccessSnackbar.value = true
+// Tahmin sonucunu güncelle - ASYNC
+const updateResult = async (predictionId: string, result: PredictionResult) => {
+  const success = await predictionsStore.updatePredictionResult(predictionId, result)
+  if (success) {
+    successMessage.value = 'Tahmin sonucu güncellendi!'
+    showSuccessSnackbar.value = true
+  }
 }
 
-const addPrediction = () => {
+// Yeni tahmin ekle - ASYNC
+const addPrediction = async () => {
   if (!authStore.user) return
 
-  predictionsStore.addPrediction({
+  const success = await predictionsStore.addPrediction({
     editorId: authStore.user.id,
     editorName: authStore.user.fullName || authStore.user.username,
     league: newPrediction.value.league,
@@ -905,66 +913,85 @@ const addPrediction = () => {
     matchDate: newPrediction.value.matchDate,
   })
 
-  newPrediction.value = {
-    league: '',
-    homeTeam: '',
-    awayTeam: '',
-    homeLogo: '',
-    awayLogo: '',
-    prediction: '',
-    odds: 0,
-    explanation: '',
-    matchDate: '',
-  }
+  if (success) {
+    newPrediction.value = {
+      league: '',
+      homeTeam: '',
+      awayTeam: '',
+      homeLogo: '',
+      awayLogo: '',
+      prediction: '',
+      odds: 0,
+      explanation: '',
+      matchDate: '',
+    }
 
-  successMessage.value = 'Tahmin başarıyla eklendi!'
-  showSuccessSnackbar.value = true
-  activeTab.value = 'predictions'
-}
-
-const deletePrediction = (id: string) => {
-  if (confirm('Bu tahmini silmek istediğinizden emin misiniz?')) {
-    predictionsStore.deletePrediction(id)
-    successMessage.value = 'Tahmin silindi!'
+    successMessage.value = 'Tahmin başarıyla eklendi!'
     showSuccessSnackbar.value = true
-  }
-}
-
-const deletePredictionFromPicks = (id: string) => {
-  if (confirm('Bu tahmini silmek istediğinizden emin misiniz?')) {
-    predictionsStore.deletePrediction(id)
-    successMessage.value = 'Tahmin başarıyla silindi!'
-    showSuccessSnackbar.value = true
-  }
-}
-
-const toggleMyTodaysPick = (predictionId: string) => {
-  if (!authStore.user) return
-  if (mySelectedTodaysPick.value === predictionId) {
-    predictionsStore.removeFromTodaysPicks(predictionId)
+    activeTab.value = 'predictions'
   } else {
-    predictionsStore.addToTodaysPicks(predictionId, authStore.user.id)
+    successMessage.value = 'Hata! Tahmin eklenemedi.'
+    showSuccessSnackbar.value = true
   }
 }
 
-const addActivity = () => {
-  activitiesStore.addActivity({
+// Tahmini sil - ASYNC
+const deletePrediction = async (id: string) => {
+  if (confirm('Bu tahmini silmek istediğinizden emin misiniz?')) {
+    const success = await predictionsStore.deletePrediction(id)
+    if (success) {
+      successMessage.value = 'Tahmin silindi!'
+      showSuccessSnackbar.value = true
+    }
+  }
+}
+
+// Picks'ten tahmini sil - ASYNC
+const deletePredictionFromPicks = async (id: string) => {
+  if (confirm('Bu tahmini silmek istediğinizden emin misiniz?')) {
+    const success = await predictionsStore.deletePrediction(id)
+    if (success) {
+      successMessage.value = 'Tahmin başarıyla silindi!'
+      showSuccessSnackbar.value = true
+    }
+  }
+}
+
+// Günün panenkası seçimini değiştir - ASYNC
+const toggleMyTodaysPick = async (predictionId: string) => {
+  if (!authStore.user) return
+
+  if (mySelectedTodaysPick.value === predictionId) {
+    await predictionsStore.removeFromTodaysPicks(predictionId)
+  } else {
+    await predictionsStore.addToTodaysPicks(predictionId, authStore.user.id)
+  }
+}
+
+// Yeni etkinlik ekle - ASYNC
+const addActivity = async () => {
+  const success = await activitiesStore.addActivity({
     icon: newActivity.value.icon,
     title: newActivity.value.title,
     description: newActivity.value.description,
   })
 
-  newActivity.value = { icon: '', title: '', description: '' }
-  showAddActivityDialog.value = false
-  successMessage.value = 'Etkinlik başarıyla eklendi!'
-  showSuccessSnackbar.value = true
+  if (success) {
+    newActivity.value = { icon: '', title: '', description: '' }
+    showAddActivityDialog.value = false
+    successMessage.value = 'Etkinlik başarıyla eklendi!'
+    showSuccessSnackbar.value = true
+  }
 }
 
-const deleteActivity = (id: string) => {
+// Etkinlik sil - ASYNC
+const deleteActivity = async (id: string) => {
   if (confirm('Bu etkinliği silmek istediğinizden emin misiniz?')) {
-    activitiesStore.deleteActivity(id)
-    successMessage.value = 'Etkinlik silindi!'
-    showSuccessSnackbar.value = true
+    const success = await activitiesStore.deleteActivity(id)
+    if (success) {
+      successMessage.value = 'Etkinlik silindi!'
+      showSuccessSnackbar.value = true
+    }
   }
 }
 </script>
