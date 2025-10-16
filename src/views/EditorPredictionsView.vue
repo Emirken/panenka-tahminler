@@ -111,9 +111,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { usePredictionsStore } from '@/store/predictions'
 
+const route = useRoute()
 const predictionsStore = usePredictionsStore()
 
 const selectedLeague = ref('premier-lig')
@@ -152,6 +154,24 @@ const leagueNameMap: Record<string, string> = {
   'ptt-1': 'PTT 1. Lig',
   'diger': 'Diğer Ligler',
 }
+
+// URL query parametresinden editörü al
+onMounted(() => {
+  const editorQuery = route.query.editor as string
+  if (editorQuery && editorIdMap[editorQuery]) {
+    selectedEditor.value = editorQuery
+  }
+})
+
+// URL değiştiğinde editörü güncelle
+watch(
+    () => route.query.editor,
+    (newEditor) => {
+      if (newEditor && typeof newEditor === 'string' && editorIdMap[newEditor]) {
+        selectedEditor.value = newEditor
+      }
+    }
+)
 
 // Store'dan verileri çek ve filtrele
 const filteredPredictions = computed(() => {

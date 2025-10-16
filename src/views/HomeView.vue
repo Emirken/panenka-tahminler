@@ -91,10 +91,10 @@
                     block
                     color="primary"
                     size="large"
-                    class="cta-button"
-                    @click="$router.push({ name: 'editorPredictions' })"
+                    class=" cta-button"
+                    @click="goToEditorPredictions(prediction.editorId)"
                 >
-                  Detaylı Analiz için Abone Ol
+                  Editörün Diğer Tahminleri
                 </v-btn>
               </v-card>
             </v-col>
@@ -117,8 +117,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { usePredictionsStore } from '@/store/predictions'
 
+const router = useRouter()
 const predictionsStore = usePredictionsStore()
 
 // Günün panenkası tahminlerini store'dan çek
@@ -132,6 +134,22 @@ const formatMatchDate = (dateString: string) => {
     month: 'long',
     hour: '2-digit',
     minute: '2-digit'
+  })
+}
+
+// Editor ID'ye göre mapping
+const editorIdToSlug: Record<string, string> = {
+  '1': 'emircan',
+  '2': 'berke',
+  '3': 'erman'
+}
+
+// Editörün diğer tahminlerine git
+const goToEditorPredictions = (editorId: string) => {
+  const editorSlug = editorIdToSlug[editorId] || 'emircan'
+  router.push({
+    name: 'editorPredictions',
+    query: { editor: editorSlug }
   })
 }
 </script>
