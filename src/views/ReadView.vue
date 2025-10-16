@@ -26,7 +26,6 @@
           <v-col cols="12" md="10" lg="8">
             <v-card elevation="4" class="content-card">
               <v-card-text class="pa-8">
-                <h3 class="text-h4 font-weight-bold mb-6 text-primary">Mutlaka Oku</h3>
                 <p class="text-body-1 reading-text">
                   Panenka tahminler ailesi olarak paylaştığımız tahminler sadece bir öngörüdür ve eğlence amaçlıdır. Asla yatırım tavsiyesi değildir. Bizim sizlerden isteğimiz şudur ki içeriğinde analiz dahi barındırsa da spor bahislerinin günün sonunda bir şans oyunu olduğunu unutmamanız, bütçenizi zorlayacak şekilde oynayarak siz ve sevdiklerinizi üzmemenizdir.
                 </p>
