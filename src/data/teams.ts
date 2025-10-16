@@ -299,7 +299,7 @@ export const teamLogos: Record<string, string> = {
     'Keçiörengücü': '🟡🔵',
     'Manisa': '🔴⚫',
     'Ümraniyespor': '🟡⚫',
-    'Sarıyer': '🟡⚫',
+    'Sarıyer': '🔵⚪',
     'Hatayspor': '🔴⚪',
     'Adana DS': '🔵⚪',
 }
