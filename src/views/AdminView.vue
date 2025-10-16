@@ -178,14 +178,25 @@
                       </div>
 
                       <template v-slot:append>
-                        <v-btn
-                            icon
-                            size="small"
-                            color="error"
-                            @click="deletePrediction(prediction.id)"
-                        >
-                          <v-icon size="20">mdi-delete</v-icon>
-                        </v-btn>
+                        <div class="action-buttons">
+                          <v-btn
+                              icon
+                              size="small"
+                              color="info"
+                              @click="editPrediction(prediction)"
+                              class="mr-2"
+                          >
+                            <v-icon size="20">mdi-pencil</v-icon>
+                          </v-btn>
+                          <v-btn
+                              icon
+                              size="small"
+                              color="error"
+                              @click="deletePrediction(prediction.id)"
+                          >
+                            <v-icon size="20">mdi-delete</v-icon>
+                          </v-btn>
+                        </div>
                       </template>
                     </v-list-item>
                   </v-list>
@@ -507,6 +518,147 @@
       </v-card>
     </v-dialog>
 
+    <!-- Edit Prediction Dialog -->
+    <v-dialog v-model="showEditDialog" max-width="800" persistent>
+      <v-card>
+        <v-card-title class="bg-primary text-white pa-4">
+          <v-icon class="mr-2">mdi-pencil</v-icon>
+          Tahmini Düzenle
+        </v-card-title>
+        <v-card-text class="pa-4 pa-md-6">
+          <v-form ref="editFormRef">
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-select
+                    v-model="editingPrediction.league"
+                    :items="leagues"
+                    label="Liga"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                    @update:model-value="onEditLeagueChange"
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                    v-model="editingPrediction.matchDate"
+                    label="Maç Tarihi ve Saati"
+                    type="datetime-local"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-select
+                    v-if="editingPrediction.league !== 'Diğer Ligler'"
+                    v-model="editingPrediction.homeTeam"
+                    :items="editAvailableTeams"
+                    label="Ev Sahibi Takım"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                    @update:model-value="onEditHomeTeamChange"
+                />
+                <v-text-field
+                    v-else
+                    v-model="editingPrediction.homeTeam"
+                    label="Ev Sahibi Takım"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-select
+                    v-if="editingPrediction.league !== 'Diğer Ligler'"
+                    v-model="editingPrediction.awayTeam"
+                    :items="editAvailableTeams"
+                    label="Deplasman Takımı"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                    @update:model-value="onEditAwayTeamChange"
+                />
+                <v-text-field
+                    v-else
+                    v-model="editingPrediction.awayTeam"
+                    label="Deplasman Takımı"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                    v-model="editingPrediction.homeLogo"
+                    :label="editingPrediction.league === 'Diğer Ligler' ? 'Ev Sahibi Logo (Emoji)' : 'Ev Sahibi Logo (Otomatik)'"
+                    variant="outlined"
+                    density="comfortable"
+                    :readonly="editingPrediction.league !== 'Diğer Ligler'"
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                    v-model="editingPrediction.awayLogo"
+                    :label="editingPrediction.league === 'Diğer Ligler' ? 'Deplasman Logo (Emoji)' : 'Deplasman Logo (Otomatik)'"
+                    variant="outlined"
+                    density="comfortable"
+                    :readonly="editingPrediction.league !== 'Diğer Ligler'"
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                    v-model="editingPrediction.prediction"
+                    label="Tahmin"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                    v-model.number="editingPrediction.odds"
+                    label="Oran"
+                    type="number"
+                    step="0.01"
+                    variant="outlined"
+                    density="comfortable"
+                    required
+                />
+              </v-col>
+
+              <v-col cols="12">
+                <v-textarea
+                    v-model="editingPrediction.explanation"
+                    label="Açıklama"
+                    variant="outlined"
+                    density="comfortable"
+                    rows="3"
+                    required
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-actions class="pa-4">
+          <v-spacer />
+          <v-btn @click="cancelEdit" size="small">İptal</v-btn>
+          <v-btn color="primary" @click="saveEdit" size="small">
+            <v-icon class="mr-1" size="18">mdi-content-save</v-icon>
+            Kaydet
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- Success Snackbar -->
     <v-snackbar
         v-model="showSuccessSnackbar"
@@ -570,8 +722,10 @@ const handleLogout = () => {
 // Admin Panel State
 const activeTab = ref('predictions')
 const showAddActivityDialog = ref(false)
+const showEditDialog = ref(false)
 const showSuccessSnackbar = ref(false)
 const successMessage = ref('')
+const editFormRef = ref()
 
 const leagues = [
   'Premier Lig',
@@ -585,6 +739,19 @@ const leagues = [
 ]
 
 const newPrediction = ref({
+  league: '',
+  homeTeam: '',
+  awayTeam: '',
+  homeLogo: '',
+  awayLogo: '',
+  prediction: '',
+  odds: 0,
+  explanation: '',
+  matchDate: '',
+})
+
+const editingPrediction = ref({
+  id: '',
   league: '',
   homeTeam: '',
   awayTeam: '',
@@ -622,6 +789,10 @@ const availableTeams = computed(() => {
   return leagueTeams[newPrediction.value.league] || []
 })
 
+const editAvailableTeams = computed(() => {
+  return leagueTeams[editingPrediction.value.league] || []
+})
+
 const onLeagueChange = () => {
   newPrediction.value.homeTeam = ''
   newPrediction.value.awayTeam = ''
@@ -637,6 +808,77 @@ const onHomeTeamChange = () => {
 const onAwayTeamChange = () => {
   const team = newPrediction.value.awayTeam
   newPrediction.value.awayLogo = teamLogos[team] || '⚽'
+}
+
+// Edit fonksiyonları
+const onEditLeagueChange = () => {
+  editingPrediction.value.homeTeam = ''
+  editingPrediction.value.awayTeam = ''
+  editingPrediction.value.homeLogo = ''
+  editingPrediction.value.awayLogo = ''
+}
+
+const onEditHomeTeamChange = () => {
+  const team = editingPrediction.value.homeTeam
+  editingPrediction.value.homeLogo = teamLogos[team] || '⚽'
+}
+
+const onEditAwayTeamChange = () => {
+  const team = editingPrediction.value.awayTeam
+  editingPrediction.value.awayLogo = teamLogos[team] || '⚽'
+}
+
+// Tahmini düzenle
+const editPrediction = (prediction: any) => {
+  editingPrediction.value = {
+    id: prediction.id,
+    league: prediction.league,
+    homeTeam: prediction.homeTeam,
+    awayTeam: prediction.awayTeam,
+    homeLogo: prediction.homeLogo,
+    awayLogo: prediction.awayLogo,
+    prediction: prediction.prediction,
+    odds: prediction.odds,
+    explanation: prediction.explanation,
+    matchDate: prediction.matchDate,
+  }
+  showEditDialog.value = true
+}
+
+// Düzenlemeyi kaydet
+const saveEdit = () => {
+  predictionsStore.updatePrediction(editingPrediction.value.id, {
+    league: editingPrediction.value.league,
+    homeTeam: editingPrediction.value.homeTeam,
+    awayTeam: editingPrediction.value.awayTeam,
+    homeLogo: editingPrediction.value.homeLogo || '⚽',
+    awayLogo: editingPrediction.value.awayLogo || '⚽',
+    prediction: editingPrediction.value.prediction,
+    odds: editingPrediction.value.odds,
+    explanation: editingPrediction.value.explanation,
+    matchDate: editingPrediction.value.matchDate,
+  })
+
+  showEditDialog.value = false
+  successMessage.value = 'Tahmin başarıyla güncellendi!'
+  showSuccessSnackbar.value = true
+}
+
+// Düzenlemeyi iptal et
+const cancelEdit = () => {
+  showEditDialog.value = false
+  editingPrediction.value = {
+    id: '',
+    league: '',
+    homeTeam: '',
+    awayTeam: '',
+    homeLogo: '',
+    awayLogo: '',
+    prediction: '',
+    odds: 0,
+    explanation: '',
+    matchDate: '',
+  }
 }
 
 // Tahmin sonucunu güncelle
@@ -921,6 +1163,17 @@ const deleteActivity = (id: string) => {
 
     &:hover {
       background-color: rgba(255, 152, 0, 0.05);
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      gap: 4px;
     }
   }
 }
