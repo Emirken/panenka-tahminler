@@ -47,29 +47,6 @@
                   Giriş Yap
                 </v-btn>
               </v-form>
-
-              <!-- Demo Credentials Info -->
-              <v-expansion-panels class="mt-6">
-                <v-expansion-panel>
-                  <v-expansion-panel-title>
-                    <v-icon class="mr-2">mdi-information</v-icon>
-                    Demo Kullanıcılar
-                  </v-expansion-panel-title>
-                  <v-expansion-panel-text>
-                    <div class="demo-users">
-                      <div class="demo-user">
-                        <strong>Emircan:</strong> emircan / emircan123
-                      </div>
-                      <div class="demo-user">
-                        <strong>Berke:</strong> berke / berke123
-                      </div>
-                      <div class="demo-user">
-                        <strong>Erman:</strong> erman / erman123
-                      </div>
-                    </div>
-                  </v-expansion-panel-text>
-                </v-expansion-panel>
-              </v-expansion-panels>
             </v-card-text>
           </v-card>
         </v-col>
@@ -758,7 +735,6 @@ const deleteActivity = (id: string) => {
   background-color: #FFF8E1;
   min-height: calc(100vh - 200px);
   width: 100%;
-  overflow-x: hidden;
 }
 
 .login-container {
