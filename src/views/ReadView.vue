@@ -5,9 +5,8 @@
       <div class="content-section">
         <v-row justify="center">
           <v-col cols="12" md="10" class="text-center">
-            <v-icon size="80" color="primary" class="mb-4">mdi-book-open-page-variant</v-icon>
             <h1 class="text-h2 font-weight-bold text-primary mb-4 fade-in">
-              Oku
+              Mutlaka Oku
             </h1>
             <p class="text-h6 mb-4 fade-in">
               Futbol bahis dünyasında bilgi güçtür!
@@ -31,6 +30,17 @@
                 <p class="text-body-1 reading-text">
                   Panenka tahminler ailesi olarak paylaştığımız tahminler sadece bir öngörüdür ve eğlence amaçlıdır. Asla yatırım tavsiyesi değildir. Bizim sizlerden isteğimiz şudur ki içeriğinde analiz dahi barındırsa da spor bahislerinin günün sonunda bir şans oyunu olduğunu unutmamanız, bütçenizi zorlayacak şekilde oynayarak siz ve sevdiklerinizi üzmemenizdir.
                 </p>
+
+                <br>
+
+                <p class="text-body-1 reading-text">
+                  Paylaştığımız tahminler analizlerimizin ve futbola olan tutkumuzun bir ürünüdür , yatırım tavsiyesi değildir. Tahminlerimizin özverili bir çalışmanın ürünü olduğunu söyleyebiliriz ancak bu bir şans oyunu olduğundan kefil olamayız.
+                </p>
+                
+                <br>
+
+                <p class="text-body-1 reading-text">
+                  Bahis oranları platformlar arası değişiklik göstermektedir. Hiçbir platform ile çalışmadığımızı , anlaşmamız olmadığını açık şekilde söyleyebiliriz. Sunduğumuz oranlar platformlar arası ortalama oranlardır.</p>
               </v-card-text>
             </v-card>
           </v-col>

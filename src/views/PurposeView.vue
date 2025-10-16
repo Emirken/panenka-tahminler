@@ -5,7 +5,6 @@
       <div class="content-section">
         <v-row justify="center">
           <v-col cols="12" md="10" class="text-center">
-            <v-icon size="80" color="primary" class="mb-4">mdi-target</v-icon>
             <h1 class="text-h2 font-weight-bold text-primary mb-4 fade-in">
               Amacımız
             </h1>
