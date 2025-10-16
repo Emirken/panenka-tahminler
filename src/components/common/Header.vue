@@ -35,7 +35,7 @@
                 class="nav-link"
                 :class="{ 'active': $route.name === 'read' }"
             >
-              Oku
+              Mutlaka Oku
             </router-link>
             <router-link
                 to="/amacimiz"
