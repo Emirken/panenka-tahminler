@@ -8,9 +8,9 @@ interface AuthState {
 
 // Demo kullanıcılar - Gerçek projede backend API kullanılacak
 const DEMO_USERS = [
-    { id: '1', username: 'emircan', password: 'emircan123', role: 'editor' as const, fullName: 'Emircan Adak' },
-    { id: '2', username: 'berke', password: 'berke123', role: 'editor' as const, fullName: 'Berke Katıksız' },
-    { id: '3', username: 'erman', password: 'erman123', role: 'editor' as const, fullName: 'Erman Şener' },
+    { id: '1', username: 'Emirken', password: 'Chrollolucifer_35', role: 'editor' as const, fullName: 'Emircan Adak' },
+    { id: '2', username: 'Bkatksz', password: 'Yanlışifre0802.', role: 'editor' as const, fullName: 'Berke Katıksız' },
+    { id: '3', username: 'Erman93', password: 'V1234567.', role: 'editor' as const, fullName: 'Erman Şener' },
 ]
 
 export const useAuthStore = defineStore('auth', {
