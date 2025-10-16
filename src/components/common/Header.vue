@@ -58,7 +58,7 @@
                       v-bind="props"
                   >
                     <v-icon class="mr-1" color="white">mdi-account-circle</v-icon>
-                    <span>{{ authStore.user?.username }}</span>
+                    <span>{{ authStore.user?.fullName }}</span>
                   </v-btn>
                 </template>
                 <v-list>

@@ -8,9 +8,9 @@ interface AuthState {
 
 // Demo kullanıcılar - Gerçek projede backend API kullanılacak
 const DEMO_USERS = [
-    { id: '1', username: 'emircan', password: 'emircan123', role: 'editor' as const },
-    { id: '2', username: 'berke', password: 'berke123', role: 'editor' as const },
-    { id: '3', username: 'erman', password: 'erman123', role: 'editor' as const },
+    { id: '1', username: 'emircan', password: 'emircan123', role: 'editor' as const, fullName: 'Emircan Adak' },
+    { id: '2', username: 'berke', password: 'berke123', role: 'editor' as const, fullName: 'Berke Katıksız' },
+    { id: '3', username: 'erman', password: 'erman123', role: 'editor' as const, fullName: 'Erman Şener' },
 ]
 
 export const useAuthStore = defineStore('auth', {
@@ -36,7 +36,8 @@ export const useAuthStore = defineStore('auth', {
                     id: user.id,
                     username: user.username,
                     role: user.role,
-                }
+                    fullName: user.fullName,
+                } as User
                 this.isAuthenticated = true
                 localStorage.setItem('authUser', JSON.stringify(this.user))
                 return true

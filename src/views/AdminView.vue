@@ -665,7 +665,7 @@ const addPrediction = () => {
 
   predictionsStore.addPrediction({
     editorId: authStore.user.id,
-    editorName: authStore.user.username,
+    editorName: authStore.user.fullName || authStore.user.username,
     league: newPrediction.value.league,
     homeTeam: newPrediction.value.homeTeam,
     awayTeam: newPrediction.value.awayTeam,
