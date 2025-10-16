@@ -656,7 +656,7 @@
                     label="Açıklama"
                     variant="outlined"
                     density="comfortable"
-                    rows="3"
+                    rows="6"
                     required
                 />
               </v-col>
