@@ -34,12 +34,12 @@ onMounted(async () => {
 <style lang="scss">
 // V-app arkaplan rengi
 .v-application {
-  background-color: #FFF8E1 !important;
+  background-color: #edf1f6 !important;
 }
 
 // Main content wrapper
 .main-content {
-  background-color: #FFF8E1 !important;
+  background-color: #edf1f6 !important;
   min-height: calc(100vh - 200px);
   width: 100%;
   overflow-x: hidden;

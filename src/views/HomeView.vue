@@ -161,13 +161,13 @@ const goToEditorPredictions = (editorId: string) => {
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   width: 100%;
 
   .hero-title {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #FF9800;
+    color: #364cf5;
 
     @media (max-width: 960px) {
       font-size: 2rem;
@@ -180,6 +180,7 @@ const goToEditorPredictions = (editorId: string) => {
 
   .hero-subtitle {
     font-size: 1.5rem;
+    color: #2b3dc4;
 
     @media (max-width: 960px) {
       font-size: 1.25rem;
@@ -201,13 +202,13 @@ const goToEditorPredictions = (editorId: string) => {
 }
 
 .today-match-section {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
   width: 100%;
 
   .section-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #FF9800;
+    color: #364cf5;
 
     @media (max-width: 960px) {
       font-size: 1.75rem;
@@ -234,7 +235,7 @@ const goToEditorPredictions = (editorId: string) => {
     background: white;
     border-radius: 16px !important;
     padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(54, 76, 245, 0.1) !important;
     transition: all 0.3s ease;
     height: 100%;
 
@@ -245,7 +246,7 @@ const goToEditorPredictions = (editorId: string) => {
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15) !important;
+      box-shadow: 0 15px 40px rgba(54, 76, 245, 0.15) !important;
     }
 
     .match-header {
@@ -261,7 +262,7 @@ const goToEditorPredictions = (editorId: string) => {
       }
 
       .league-chip {
-        background-color: #FF9800 !important;
+        background-color: #364cf5 !important;
         color: white !important;
         font-weight: 600;
         font-size: 0.75rem;
@@ -359,7 +360,7 @@ const goToEditorPredictions = (editorId: string) => {
     }
 
     .prediction-box {
-      background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
       padding: 14px;
       border-radius: 12px;
       text-align: center;
@@ -379,7 +380,7 @@ const goToEditorPredictions = (editorId: string) => {
       .prediction-text {
         font-size: 1rem;
         font-weight: 700;
-        color: #FF9800;
+        color: #364cf5;
         margin-bottom: 4px;
 
         @media (max-width: 600px) {
@@ -390,7 +391,7 @@ const goToEditorPredictions = (editorId: string) => {
       .prediction-odds {
         font-size: 0.95rem;
         font-weight: 600;
-        color: #FBBF24;
+        color: #2b3dc4;
 
         @media (max-width: 600px) {
           font-size: 0.85rem;
@@ -405,7 +406,7 @@ const goToEditorPredictions = (editorId: string) => {
       font-size: 0.875rem;
       padding: 18px 0 !important;
       border-radius: 12px !important;
-      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3) !important;
+      box-shadow: 0 4px 12px rgba(54, 76, 245, 0.3) !important;
       transition: all 0.3s ease;
 
       @media (max-width: 600px) {
@@ -416,7 +417,7 @@ const goToEditorPredictions = (editorId: string) => {
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(255, 152, 0, 0.4) !important;
+        box-shadow: 0 6px 16px rgba(54, 76, 245, 0.4) !important;
       }
     }
   }

@@ -24,17 +24,24 @@
                     {{ getEditorPredictionCount(editor.id) }} Tahmin
                   </v-chip>
 
-                  <!-- Son 5 Maç Sonuçları -->
-                  <div v-if="getLastFiveResults(editor.id).length > 0" class="results-row">
+                  <!-- Son 10 Maç Sonuçları -->
+                  <div v-if="getLastTenResults(editor.id).length > 0" class="results-row">
                     <v-tooltip
-                        v-for="(result, index) in getLastFiveResults(editor.id)"
+                        v-for="(result, index) in getLastTenResults(editor.id)"
                         :key="index"
                         location="top"
                     >
                       <template v-slot:activator="{ props }">
-                        <div v-bind="props" class="result-icon">
+                        <div
+                            v-bind="props"
+                            class="result-icon"
+                            :class="{
+                              'result-won': result.result === 'won',
+                              'result-lost': result.result === 'lost'
+                            }"
+                        >
                           <v-icon
-                              :color="result.result === 'won' ? 'success' : 'error'"
+                              color="white"
                               size="18"
                           >
                             {{ result.result === 'won' ? 'mdi-check-circle' : 'mdi-close-circle' }}
@@ -174,8 +181,8 @@ const getEditorPredictionCount = (editorId: string) => {
   return predictionsStore.allPredictions.filter(p => p.editorId === editorId).length
 }
 
-// Son 5 sonucu getir
-const getLastFiveResults = (editorId: string) => {
+// Son 10 sonucu getir (fonksiyon adı lastFiveResults kaldı ama 10 maç getiriyor)
+const getLastTenResults = (editorId: string) => {
   return predictionsStore.lastFiveResults(editorId)
 }
 
@@ -197,7 +204,17 @@ watch(
 
 const editorPredictions = computed(() => {
   const editorId = editorIdMap[selectedEditor.value]
-  return predictionsStore.predictionsByEditor(editorId)
+  const predictions = predictionsStore.predictionsByEditor(editorId)
+
+  // Liglere göre grupla ve sırala
+  return predictions.sort((a, b) => {
+    // Önce lige göre alfabetik sırala
+    if (a.league !== b.league) {
+      return a.league.localeCompare(b.league, 'tr')
+    }
+    // Aynı ligteyse tarihe göre sırala (yeniden eskiye)
+    return new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime()
+  })
 })
 
 const formatMatchDate = (dateString: string) => {
@@ -226,7 +243,7 @@ const formatTooltipDate = (dateString: string) => {
 
 <style scoped lang="scss">
 .editor-predictions-view {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
   min-height: calc(100vh - 200px);
 }
 
@@ -260,18 +277,24 @@ const formatTooltipDate = (dateString: string) => {
       justify-content: center;
 
       &:hover {
-        background: rgba(255, 152, 0, 0.1);
-        color: #FF9800;
+        background: rgba(54, 76, 245, 0.1);
+        color: #364cf5;
       }
 
       &.active {
-        background: #FF9800;
+        background: #364cf5;
         color: white;
         font-weight: 700;
 
         .results-row {
           .result-icon {
-            background: rgba(255, 255, 255, 0.2);
+            &.result-won {
+              background: rgba(76, 175, 80, 0.3);
+            }
+
+            &.result-lost {
+              background: rgba(244, 67, 54, 0.3);
+            }
 
             .v-icon {
               color: white !important;
@@ -315,8 +338,17 @@ const formatTooltipDate = (dateString: string) => {
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
             transition: all 0.2s ease;
+
+            // Yeşil arka plan (kazanılan maçlar)
+            &.result-won {
+              background: #4CAF50;
+            }
+
+            // Kırmızı arka plan (kaybedilen maçlar)
+            &.result-lost {
+              background: #F44336;
+            }
 
             &:hover {
               transform: scale(1.15);
@@ -394,7 +426,7 @@ const formatTooltipDate = (dateString: string) => {
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+      box-shadow: 0 8px 24px rgba(54, 76, 245, 0.15) !important;
     }
 
     .prediction-header {
@@ -461,7 +493,7 @@ const formatTooltipDate = (dateString: string) => {
     }
 
     .prediction-box {
-      background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
       padding: 12px;
       border-radius: 8px;
       display: flex;
@@ -479,14 +511,14 @@ const formatTooltipDate = (dateString: string) => {
         .value {
           font-size: 1rem;
           font-weight: 700;
-          color: #FF9800;
+          color: #364cf5;
           margin: 0;
         }
 
         .odds-value {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #FBBF24;
+          color: #2b3dc4;
           margin: 0;
         }
       }

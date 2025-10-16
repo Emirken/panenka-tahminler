@@ -20,17 +20,14 @@
           <v-col cols="12" md="10" lg="8">
             <v-card elevation="4" class="content-card">
               <v-card-text class="pa-8">
-
                 <br>
-
                 <p class="text-body-1 reading-text">
                   Panenka Tahminler Ailesi olarak paylaştığımız tahminler yatırım tavsiyesi değildir. Tahminlerimizin özverili bir çalışma sonucu ortaya çıktığını söyleyebiliriz ancak bunun bir şans oyunu olduğu unutulmamalıdır.
                 </p>
-                
                 <br>
-
                 <p class="text-body-1 reading-text">
-                  Bahis oranları platformlar arası değişiklik göstermektedir. Hiçbir platform ile çalışmadığımızı , anlaşmamız olmadığını açık şekilde söyleyebiliriz. Sunduğumuz oranlar platformlar arası ortalama oranlardır.</p>
+                  Bahis oranları platformlar arası değişiklik göstermektedir. Hiçbir platform ile çalışmadığımızı, anlaşmamız olmadığını açık şekilde söyleyebiliriz. Sunduğumuz oranlar platformlar arası ortalama oranlardır.
+                </p>
               </v-card-text>
             </v-card>
           </v-col>
@@ -40,17 +37,14 @@
   </div>
 </template>
 
-<script setup lang="ts">
-</script>
-
 <style scoped lang="scss">
 .read-view {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
   min-height: calc(100vh - 200px);
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
 }
 
 .content-section {
@@ -60,18 +54,18 @@
 }
 
 .content-section-wrapper {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
 }
 
 .content-card {
   border-radius: 16px !important;
   transition: all 0.3s ease;
   background: white;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(54, 76, 245, 0.1) !important;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 12px 32px rgba(54, 76, 245, 0.15) !important;
   }
 
   .reading-text {
@@ -80,10 +74,6 @@
     font-size: 1.125rem;
     text-align: justify;
   }
-}
-
-.h-100 {
-  height: 100%;
 }
 
 @keyframes fadeIn {

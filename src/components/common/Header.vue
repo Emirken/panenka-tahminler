@@ -175,14 +175,8 @@ const navigateToAdmin = () => {
 
 <style scoped lang="scss">
 .header-container {
-  background: linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0.85) 0%,
-          rgba(0, 0, 0, 0.75) 50%,
-          rgba(0, 0, 0, 0.5) 100%
-  );
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  background: #2b3dc4;
+  box-shadow: 0 2px 12px rgba(43, 61, 196, 0.3);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -204,7 +198,7 @@ const navigateToAdmin = () => {
       height: 60px;
       width: 60px;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+      box-shadow: 0 2px 8px rgba(54, 76, 245, 0.3);
 
       @media (max-width: 600px) {
         height: 45px;
@@ -215,8 +209,8 @@ const navigateToAdmin = () => {
     .logo-text {
       font-size: 1.5rem;
       font-weight: 800;
-      color: #FF9800;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
       @media (max-width: 960px) {
         font-size: 1.25rem;
@@ -249,13 +243,13 @@ const navigateToAdmin = () => {
         transform: translateX(-50%);
         width: 0;
         height: 3px;
-        background: #FF9800;
+        background: white;
         transition: width 0.3s ease;
       }
 
       &:hover {
-        color: #FF9800;
-        background-color: rgba(255, 152, 0, 0.1);
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
 
         &::after {
           width: 80%;
@@ -263,9 +257,9 @@ const navigateToAdmin = () => {
       }
 
       &.active {
-        color: #FF9800;
+        color: white;
         font-weight: 700;
-        background-color: rgba(255, 152, 0, 0.15);
+        background-color: rgba(255, 255, 255, 0.15);
 
         &::after {
           width: 80%;
@@ -283,7 +277,7 @@ const navigateToAdmin = () => {
     }
 
     &:hover {
-      background-color: rgba(255, 152, 0, 0.2);
+      background-color: rgba(255, 255, 255, 0.2);
 
       .v-icon {
         transform: scale(1.1);
@@ -303,20 +297,20 @@ const navigateToAdmin = () => {
     transition: all 0.3s ease;
 
     &:hover {
-      color: #FF9800;
-      background-color: rgba(255, 152, 0, 0.1);
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
     }
   }
 
   .mobile-menu {
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(43, 61, 196, 0.98);
     border-radius: 12px;
     padding: 12px;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 
     .mobile-divider {
-      background-color: rgba(255, 152, 0, 0.3);
+      background-color: rgba(255, 255, 255, 0.3);
     }
 
     .mobile-link {
@@ -338,15 +332,15 @@ const navigateToAdmin = () => {
       }
 
       &:hover {
-        background-color: rgba(255, 152, 0, 0.2);
-        color: #FF9800;
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
         transform: translateX(8px);
       }
 
       &.active {
-        color: #FF9800;
+        color: white;
         font-weight: 700;
-        background-color: rgba(255, 152, 0, 0.25);
+        background-color: rgba(255, 255, 255, 0.25);
       }
     }
   }

@@ -4,8 +4,8 @@
       <v-row align="center">
         <v-col cols="12" md="4">
           <div class="d-flex align-center mb-4 mb-md-0 justify-center justify-md-start">
-            <v-avatar size="32" color="primary" class="mr-3">
-              <v-icon color="white" size="20">mdi-soccer</v-icon>
+            <v-avatar size="32" color="white" class="mr-3">
+              <v-icon color="primary" size="20">mdi-soccer</v-icon>
             </v-avatar>
             <span class="text-h6 font-weight-bold">Panenka Tahminler</span>
           </div>
@@ -37,11 +37,12 @@
 
 <style scoped lang="scss">
 .app-footer {
-  background-color: #2C3E50 !important;
+  background-color: #2b3dc4 !important;
   color: white;
   margin-top: auto;
   width: 100%;
   padding: 32px 0;
+  box-shadow: 0 -2px 12px rgba(43, 61, 196, 0.2);
 
   // Mobil düzenlemeler
   @media (max-width: 960px) {
@@ -71,6 +72,15 @@
 
     .text-h6 {
       font-size: 0.875rem !important;
+    }
+  }
+
+  .v-btn {
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
     }
   }
 }

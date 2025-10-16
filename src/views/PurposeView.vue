@@ -28,9 +28,8 @@
                   sürükleyen, içinde heyecan, mücadele, taktik, zeka, yetenek gibi birçok dinamikleri içinde barındıran keyifli
                   bir spor. Kimi aktif sporcu, kimi teknik direktör, kimi kulüp yöneticisi, kimi taraftar, kimi sadece bir
                   spor seyircisi, kimi için yaşam amacı. Bir gerçek çok nettir ki futbol diğer spor dallarından farklı
-                  olarak halkın her kesiminden kişilerin yorumunun olduğu bir spordur.Kimi içinse tahminlerde bulunup müsabakasına heyecan katma isteğidir.
+                  olarak halkın her kesiminden kişilerin yorumunun olduğu bir spordur. Kimi içinse tahminlerde bulunup müsabakasına heyecan katma isteğidir.
                 </p>
-
                 <p class="text-body-1 purpose-text">
                   Panenka tahminler ailesi olarak bizler de futbol müsabakalarına tahminlerde bulunmaktan keyif alıyor, doğru analiz için detaylara dikkat ediyor ve haftanın belirli günleri oynanacak olan maçlar hakkındaki yorumlarımızı siz kıymetli misafirlerimiz ile paylaşıyoruz. Paylaştığımız tahminler, tamamen kendi analizlerimizin ve futbola olan tutkumuzun bir ürünüdür. Tahminlermizi takip edebilir, kendi yorumunla birleştirip değerlendirebilirsin. Faydalan, düşün, keyif al !
                 </p>
@@ -43,17 +42,14 @@
   </div>
 </template>
 
-<script setup lang="ts">
-</script>
-
 <style scoped lang="scss">
 .purpose-view {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
   min-height: calc(100vh - 200px);
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%);
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
 }
 
 .content-section {
@@ -63,18 +59,18 @@
 }
 
 .content-section-main {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
 }
 
 .purpose-card {
   border-radius: 16px !important;
   transition: all 0.3s ease;
   background: white;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(54, 76, 245, 0.1) !important;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 12px 32px rgba(54, 76, 245, 0.15) !important;
   }
 
   .purpose-text {
@@ -83,10 +79,6 @@
     font-size: 1.125rem;
     text-align: justify;
   }
-}
-
-.h-100 {
-  height: 100%;
 }
 
 @keyframes fadeIn {

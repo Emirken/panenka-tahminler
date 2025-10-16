@@ -1033,13 +1033,13 @@ const deleteActivity = async (id: string) => {
 
 <style scoped lang="scss">
 .admin-view {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
   min-height: calc(100vh - 200px);
   width: 100%;
 }
 
 .login-container {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
   min-height: calc(100vh - 200px);
 
   .login-card {
@@ -1052,7 +1052,7 @@ const deleteActivity = async (id: string) => {
 }
 
 .admin-panel {
-  background-color: #FFF8E1;
+  background-color: #edf1f6;
   width: 100%;
   overflow-x: hidden;
 
@@ -1078,7 +1078,7 @@ const deleteActivity = async (id: string) => {
     .admin-title {
       font-size: 2rem;
       font-weight: bold;
-      color: #FF9800;
+      color: #364cf5;
 
       @media (max-width: 600px) {
         font-size: 1.5rem;
@@ -1151,7 +1151,7 @@ const deleteActivity = async (id: string) => {
     }
 
     &:hover {
-      background-color: rgba(255, 152, 0, 0.05);
+      background-color: rgba(54, 76, 245, 0.05);
     }
 
     .prediction-content {
@@ -1224,7 +1224,7 @@ const deleteActivity = async (id: string) => {
     transition: all 0.3s ease;
 
     &:hover {
-      background-color: rgba(255, 152, 0, 0.05);
+      background-color: rgba(54, 76, 245, 0.05);
     }
   }
 

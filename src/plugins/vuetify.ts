@@ -6,14 +6,15 @@ import * as directives from 'vuetify/directives'
 const customTheme = {
     dark: false,
     colors: {
-        primary: '#FF9800', // Turuncu
+        primary: '#364cf5', // Mavi (card içindeki ana renk)
         secondary: '#2C3E50', // Koyu mavi (footer rengi)
-        background: '#FFF8E1', // Açık sarı/krem
+        background: '#edf1f6', // Açık gri-mavi arka plan
         surface: '#FFFFFF',
         error: '#F44336',
         info: '#2196F3',
         success: '#4CAF50',
         warning: '#FFC107',
+        header: '#2b3dc4', // Header mavi rengi
     },
 }
 
