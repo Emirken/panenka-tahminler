@@ -27,7 +27,7 @@
         </h2>
 
         <p class="section-description text-center mb-6 mb-md-8 px-4">
-          Editörlerimizin belli bir oran üstü yaptığı tahminler
+          Editörlerimizin o gün için olan en güvendiği maçların listesidir.
         </p>
 
         <v-container fluid class="px-2 px-md-4">
