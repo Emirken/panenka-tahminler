@@ -235,14 +235,18 @@
                       </v-col>
 
                       <v-col cols="12" sm="6">
-                        <v-text-field
-                            v-model="newPrediction.matchDate"
-                            label="Maç Tarihi ve Saati"
-                            type="datetime-local"
-                            variant="outlined"
-                            density="comfortable"
-                            required
-                        />
+                        <div class="datetime-field-wrapper">
+                          <v-text-field
+                              v-model="newPrediction.matchDate"
+                              label="Maç Tarihi ve Saati"
+                              type="datetime-local"
+                              variant="outlined"
+                              density="comfortable"
+                              required
+                              class="datetime-field"
+                              @click="openDateTimePicker"
+                          />
+                        </div>
                       </v-col>
 
                       <v-col cols="12" sm="6">
@@ -707,7 +711,13 @@ const loginForm = ref({
   username: '',
   password: '',
 })
-
+const openDateTimePicker = (event: Event) => {
+  const target = event.target as HTMLElement;
+  const input = target.closest('.datetime-field-wrapper')?.querySelector('input[type="datetime-local"]') as HTMLInputElement;
+  if (input) {
+    input.showPicker(); // Tarayıcı datetime picker'ını açar
+  }
+}
 const rules = {
   required: (value: string) => !!value || 'Bu alan zorunludur',
 }
