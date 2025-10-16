@@ -286,8 +286,8 @@ const formatMatchDate = (dateString: string) => {
         gap: 8px;
 
         .team-logo-wrapper {
-          width: 60px;
-          height: 60px;
+          width: 80px;
+          height: 80px;
           border-radius: 12px;
           display: flex;
           align-items: center;

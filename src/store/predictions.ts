@@ -3,74 +3,13 @@ import { Prediction } from '@/types'
 
 interface PredictionsState {
     predictions: Prediction[]
-    todaysPicks: string[] // Günün panenkası seçilen tahmin ID'leri (max 3)
+    todaysPicks: string[] // Günün panenkası seçilen tahmin ID'leri (her admindan max 1 tane)
 }
 
 export const usePredictionsStore = defineStore('predictions', {
     state: (): PredictionsState => ({
-        predictions: [
-            {
-                id: '1',
-                editorId: '1',
-                editorName: 'Emircan Adak',
-                league: 'Premier Lig',
-                homeTeam: 'Aston Villa',
-                awayTeam: 'Arsenal',
-                homeLogo: '🔴🔵',
-                awayLogo: '🔴⚪',
-                prediction: '2.5 Gol Üstü',
-                odds: 1.70,
-                explanation: 'Unai Emery eski takımına karşı sürpriz yapabilir. Aston Villa kendi evinde çok etkili bir takım. Arsenal şampiyonluk yolunda puan kaybetmek istemeyecektir. Gollü ve çekişmeli bir maç bekliyorum.',
-                matchDate: '2025-10-13T21:00:00',
-                createdAt: '2025-10-13T10:00:00',
-            },
-            {
-                id: '2',
-                editorId: '2',
-                editorName: 'Berke Katıksız',
-                league: 'İtalya Serie A',
-                homeTeam: 'Inter',
-                awayTeam: 'Juventus',
-                homeLogo: '🔵⚫',
-                awayLogo: '⚪⚫',
-                prediction: '2.5 Gol Altı',
-                odds: 1.80,
-                explanation: 'İtalya\'nın en büyük derbisi. İki takım da zirve mücadelesi veriyor. Kontrollü bir oyun ve az gol bekliyorum.',
-                matchDate: '2025-10-14T20:45:00',
-                createdAt: '2025-10-13T11:00:00',
-            },
-            {
-                id: '3',
-                editorId: '1',
-                editorName: 'Emircan Adak',
-                league: 'Almanya Bundesliga',
-                homeTeam: 'Bayern',
-                awayTeam: 'Stuttgart',
-                homeLogo: '🔴⚪',
-                awayLogo: '⚪🔴',
-                prediction: 'Handikaplı Maç Sonucu 1',
-                odds: 1.95,
-                explanation: 'Stuttgart bu sezonun sürpriz takımı ancak Allianz Arena\'da işleri zor. Bayern Münih, Leverkusen\'i takibini sürdürmek için hata yapmayacaktır. Farklı bir galibiyet alabilirler.',
-                matchDate: '2025-10-15T18:30:00',
-                createdAt: '2025-10-13T12:00:00',
-            },
-            {
-                id: '4',
-                editorId: '3',
-                editorName: 'Erman Şener',
-                league: 'Türkiye Süper Lig',
-                homeTeam: 'Fenerbahçe',
-                awayTeam: 'Galatasaray',
-                homeLogo: '💛💙',
-                awayLogo: '🔴🟡',
-                prediction: 'Karşılıklı Gol Var',
-                odds: 1.55,
-                explanation: 'Derbide tansiyon yüksek olacak. Fenerbahçe\'nin ev sahibi avantajı ve son haftalardaki çıkışı önemli. Ancak Galatasaray\'ın da Icardi gibi bir gol silahı var. İki takımın da gol bulmasını bekliyorum.',
-                matchDate: '2025-10-16T19:00:00',
-                createdAt: '2025-10-13T13:00:00',
-            },
-        ],
-        todaysPicks: ['1', '2', '4'], // Başlangıçta 3 tahmin seçili
+        predictions: [],
+        todaysPicks: [],
     }),
 
     getters: {
@@ -91,6 +30,15 @@ export const usePredictionsStore = defineStore('predictions', {
             return state.todaysPicks
                 .map(id => state.predictions.find(p => p.id === id))
                 .filter(p => p !== undefined) as Prediction[]
+        },
+
+        // Belirli bir adminın seçtiği günün panenkası tahmini
+        editorTodaysPick: (state) => (editorId: string) => {
+            const editorPredictions = state.predictions.filter(p => p.editorId === editorId)
+            const editorPickId = state.todaysPicks.find(pickId =>
+                editorPredictions.some(p => p.id === pickId)
+            )
+            return editorPickId || null
         },
     },
 
@@ -115,24 +63,28 @@ export const usePredictionsStore = defineStore('predictions', {
 
         deletePrediction(id: string) {
             this.predictions = this.predictions.filter(p => p.id !== id)
-            // Silinen tahmin günün panenkasında varsa oradan da kaldır
             this.todaysPicks = this.todaysPicks.filter(pickId => pickId !== id)
             this.savePredictions()
         },
 
-        // Günün panenkası seçimini güncelle
-        setTodaysPicks(predictionIds: string[]) {
-            // Maksimum 3 tahmin seçilebilir
-            this.todaysPicks = predictionIds.slice(0, 3)
-            this.savePredictions()
-        },
+        // Günün panenkasına tahmin ekle (Her admin sadece 1 tahmin seçebilir)
+        addToTodaysPicks(predictionId: string, editorId: string) {
+            // Önce bu adminin daha önce seçtiği tahmini bul ve kaldır
+            const editorPredictions = this.predictions.filter(p => p.editorId === editorId)
+            const oldPickId = this.todaysPicks.find(pickId =>
+                editorPredictions.some(p => p.id === pickId)
+            )
 
-        // Günün panenkasına tahmin ekle
-        addToTodaysPicks(predictionId: string) {
-            if (this.todaysPicks.length < 3 && !this.todaysPicks.includes(predictionId)) {
-                this.todaysPicks.push(predictionId)
-                this.savePredictions()
+            if (oldPickId) {
+                this.todaysPicks = this.todaysPicks.filter(id => id !== oldPickId)
             }
+
+            // Yeni tahmini ekle (eğer zaten yoksa)
+            if (!this.todaysPicks.includes(predictionId)) {
+                this.todaysPicks.push(predictionId)
+            }
+
+            this.savePredictions()
         },
 
         // Günün panenkasından tahmin çıkar

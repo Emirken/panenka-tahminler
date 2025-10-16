@@ -361,13 +361,13 @@
                       <span class="card-title-text">Günün Panenkası</span>
                     </div>
                     <v-chip color="white" variant="text" size="small">
-                      {{ mySelectedTodaysPicks.length }}/1
+                      {{ isMyPredictionSelected ? '1/1' : '0/1' }}
                     </v-chip>
                   </div>
                 </v-card-title>
                 <v-card-text class="pa-3 pa-md-6">
                   <v-alert type="info" class="mb-4" density="compact">
-                    Ana sayfada gösterilecek 1 tahmininizi seçin.
+                    Ana sayfada gösterilecek 1 tahmininizi seçin. Her editör sadece 1 tahmin seçebilir.
                   </v-alert>
 
                   <div v-if="myPredictions.length === 0" class="empty-state">
@@ -380,13 +380,12 @@
                         v-for="prediction in myPredictions"
                         :key="prediction.id"
                         class="pick-item mb-3 border rounded"
-                        :class="{ 'selected-pick': mySelectedTodaysPicks.includes(prediction.id) }"
+                        :class="{ 'selected-pick': isMyPredictionSelected && mySelectedTodaysPick === prediction.id }"
                     >
                       <template v-slot:prepend>
                         <v-checkbox
-                            :model-value="mySelectedTodaysPicks.includes(prediction.id)"
+                            :model-value="mySelectedTodaysPick === prediction.id"
                             @update:model-value="toggleMyTodaysPick(prediction.id)"
-                            :disabled="!mySelectedTodaysPicks.includes(prediction.id) && mySelectedTodaysPicks.length >= 1"
                             color="primary"
                             hide-details
                         />
@@ -407,7 +406,7 @@
                       <template v-slot:append>
                         <div class="pick-actions">
                           <v-chip
-                              v-if="mySelectedTodaysPicks.includes(prediction.id)"
+                              v-if="mySelectedTodaysPick === prediction.id"
                               color="success"
                               size="x-small"
                               class="mb-2 mb-sm-0 mr-sm-2"
@@ -635,11 +634,9 @@ const myPredictions = computed(() => {
 const activities = computed(() => activitiesStore.allActivities)
 
 // SADECE KENDI TAHMİNLERİNDEN SEÇİLENLER
-const mySelectedTodaysPicks = computed(() => {
-  if (!authStore.user) return []
-  const allPicks = predictionsStore.todaysPicks
-  const myPredictionIds = myPredictions.value.map(p => p.id)
-  return allPicks.filter(pickId => myPredictionIds.includes(pickId))
+const mySelectedTodaysPick = computed(() => {
+  if (!authStore.user) return null
+  return predictionsStore.editorTodaysPick(authStore.user.id)
 })
 
 const availableTeams = computed(() => {
@@ -715,12 +712,19 @@ const deletePredictionFromPicks = (id: string) => {
 
 // SADECE KENDİ TAHMİNLERİNİ SEÇEBİLİR (MAX 1)
 const toggleMyTodaysPick = (predictionId: string) => {
-  if (mySelectedTodaysPicks.value.includes(predictionId)) {
+  if (!authStore.user) return
+
+  if (mySelectedTodaysPick.value === predictionId) {
+    // Seçimi kaldır
     predictionsStore.removeFromTodaysPicks(predictionId)
-  } else if (mySelectedTodaysPicks.value.length < 1) {
-    predictionsStore.addToTodaysPicks(predictionId)
+  } else {
+    // Yeni tahmin seç (eski seçim otomatik kaldırılacak)
+    predictionsStore.addToTodaysPicks(predictionId, authStore.user.id)
   }
 }
+const isMyPredictionSelected = computed(() => {
+  return mySelectedTodaysPick.value !== null
+})
 
 const addActivity = () => {
   activitiesStore.addActivity({
