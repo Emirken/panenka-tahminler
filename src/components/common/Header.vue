@@ -7,7 +7,7 @@
           <div class="d-flex align-center">
             <router-link to="/" class="logo-link">
               <img
-                  src="../../assets/panenka.png"
+                  src="../../assets/panenkaDeneme.svg"
                   class="logo-img"
               />
               <span class="logo-text">Panenka Tahminler</span>
@@ -29,6 +29,13 @@
                 :class="{ 'active': $route.name === 'editorPredictions' }"
             >
               Editör Tahminleri
+            </router-link>
+            <router-link
+                to="/puan-tablosu"
+                class="nav-link"
+                :class="{ 'active': $route.name === 'standings' }"
+            >
+              Puan Tablosu
             </router-link>
             <router-link
                 to="/oku"
@@ -110,6 +117,15 @@
             >
               <v-icon size="20" class="mr-2">mdi-account-group</v-icon>
               Editör Tahminleri
+            </router-link>
+            <router-link
+                to="/puan-tablosu"
+                class="mobile-link"
+                :class="{ 'active': $route.name === 'standings' }"
+                @click="mobileMenuOpen = false"
+            >
+              <v-icon size="20" class="mr-2">mdi-table</v-icon>
+              Puan Tablosu
             </router-link>
             <router-link
                 to="/oku"
@@ -197,8 +213,6 @@ const navigateToAdmin = () => {
     .logo-img {
       height: 60px;
       width: 60px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(54, 76, 245, 0.3);
 
       @media (max-width: 600px) {
         height: 45px;
