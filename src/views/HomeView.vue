@@ -27,7 +27,7 @@
         </h2>
 
         <p class="section-description text-center mb-6 mb-md-8 px-4">
-          Editörlerimiz gün özelinde en güvendikleri bir tahminini 'Günün Panenkası' olarak sizlere sunuyor
+          Editörlerimiz gün özelinde en güvendikleri bir tahminini "Günün Panenkası" olarak sizlere sunuyor
         </p>
 
         <v-container fluid class="px-2 px-md-4">
@@ -78,6 +78,11 @@
                     <span class="team-name">{{ prediction.awayTeam }}</span>
                   </div>
                 </div>
+
+                <p class="prediction-explanation">
+                  "{{ prediction.explanation }}"
+                </p>
+
 
                 <!-- Prediction Section -->
                 <div class="prediction-box">
@@ -159,7 +164,13 @@ const goToEditorPredictions = (editorId: string) => {
   width: 100%;
   overflow-x: hidden;
 }
-
+.prediction-explanation {
+  font-size: 0.8rem;
+  color: #666;
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
 .hero-section {
   background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   width: 100%;
