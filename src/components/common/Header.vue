@@ -30,13 +30,13 @@
             >
               Editör Tahminleri
             </router-link>
-            <router-link
+<!--            <router-link
                 to="/puan-tablosu"
                 class="nav-link"
                 :class="{ 'active': $route.name === 'standings' }"
             >
               Puan Tablosu
-            </router-link>
+            </router-link>-->
             <router-link
                 to="/oku"
                 class="nav-link"
