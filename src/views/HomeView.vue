@@ -86,7 +86,22 @@
 
                   <!-- Prediction Section - EN ALTA TAŞINDI -->
                   <div class="prediction-box mt-auto">
-                    <p class="prediction-label">Tahmin</p>
+                    <div class="prediction-box-header">
+                      <p class="prediction-label">Tahmin</p>
+                      <v-tooltip location="top">
+                        <template v-slot:activator="{ props }">
+                          <v-icon
+                              v-bind="props"
+                              size="18"
+                              color="#666"
+                              class="info-icon"
+                          >
+                            mdi-information
+                          </v-icon>
+                        </template>
+                        <span>Oranlar platformlar arası ve anlık değişiklik gösterebilir.</span>
+                      </v-tooltip>
+                    </div>
                     <p class="prediction-text">{{ prediction.prediction }}</p>
                     <p class="prediction-odds">Oran: {{ prediction.odds.toFixed(2) }}</p>
                   </div>
@@ -384,17 +399,35 @@ const goToEditorPredictions = (editorId: string) => {
       border-radius: 12px;
       text-align: center;
       margin: 16px 0;
-      margin-top: auto; /* Bu önemli - tahmin kutusunu en alta iter */
+      margin-top: auto;
 
       @media (max-width: 600px) {
         padding: 12px;
         margin: 12px 0;
       }
 
+      .prediction-box-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 4px;
+
+        .info-icon {
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            color: #364cf5 !important;
+            transform: scale(1.15);
+          }
+        }
+      }
+
       .prediction-label {
         font-size: 0.7rem;
         color: #666;
-        margin-bottom: 4px;
+        margin: 0;
       }
 
       .prediction-text {

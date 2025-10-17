@@ -123,7 +123,22 @@
                   <!-- Prediction Box - EN ALTA TAŞINDI -->
                   <div class="prediction-box mt-auto">
                     <div class="prediction-info">
-                      <p class="label">Tahmin</p>
+                      <div class="prediction-info-header">
+                        <p class="label">Tahmin</p>
+                        <v-tooltip location="top">
+                          <template v-slot:activator="{ props }">
+                            <v-icon
+                                v-bind="props"
+                                size="16"
+                                color="#666"
+                                class="info-icon"
+                            >
+                              mdi-information
+                            </v-icon>
+                          </template>
+                          <span>Oranlar platformlar arası ve anlık değişiklik gösterebilir.</span>
+                        </v-tooltip>
+                      </div>
                       <p class="value">{{ prediction.prediction }}</p>
                     </div>
                     <div class="odds-info">
@@ -181,7 +196,7 @@ const getEditorPredictionCount = (editorId: string) => {
   return predictionsStore.allPredictions.filter(p => p.editorId === editorId).length
 }
 
-// Son 10 sonucu getir (fonksiyon adı lastFiveResults kaldı ama 10 maç getiriyor)
+// Son 10 sonucu getir
 const getLastTenResults = (editorId: string) => {
   return predictionsStore.lastFiveResults(editorId)
 }
@@ -206,13 +221,10 @@ const editorPredictions = computed(() => {
   const editorId = editorIdMap[selectedEditor.value]
   const predictions = predictionsStore.predictionsByEditor(editorId)
 
-  // Liglere göre grupla ve sırala
   return predictions.sort((a, b) => {
-    // Önce lige göre alfabetik sırala
     if (a.league !== b.league) {
       return a.league.localeCompare(b.league, 'tr')
     }
-    // Aynı ligteyse tarihe göre sırala (yeniden eskiye)
     return new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime()
   })
 })
@@ -228,7 +240,6 @@ const formatMatchDate = (dateString: string) => {
   })
 }
 
-// Tooltip için daha kompakt tarih formatı
 const formatTooltipDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('tr-TR', {
@@ -340,12 +351,10 @@ const formatTooltipDate = (dateString: string) => {
             border-radius: 50%;
             transition: all 0.2s ease;
 
-            // Yeşil arka plan (kazanılan maçlar)
             &.result-won {
               background: #4CAF50;
             }
 
-            // Kırmızı arka plan (kaybedilen maçlar)
             &.result-lost {
               background: #F44336;
             }
@@ -505,7 +514,7 @@ const formatTooltipDate = (dateString: string) => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: auto; /* Bu önemli - tahmin kutusunu en alta iter */
+      margin-top: auto;
 
       .prediction-info,
       .odds-info {
@@ -527,6 +536,29 @@ const formatTooltipDate = (dateString: string) => {
           font-weight: 700;
           color: #2b3dc4;
           margin: 0;
+        }
+      }
+
+      .prediction-info {
+        .prediction-info-header {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          margin-bottom: 4px;
+
+          .label {
+            margin-bottom: 0;
+          }
+
+          .info-icon {
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+              color: #364cf5 !important;
+              transform: scale(1.15);
+            }
+          }
         }
       }
 
