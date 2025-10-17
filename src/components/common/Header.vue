@@ -118,7 +118,7 @@
               <v-icon size="20" class="mr-2">mdi-account-group</v-icon>
               Editör Tahminleri
             </router-link>
-            <router-link
+<!--            <router-link
                 to="/puan-tablosu"
                 class="mobile-link"
                 :class="{ 'active': $route.name === 'standings' }"
@@ -126,7 +126,7 @@
             >
               <v-icon size="20" class="mr-2">mdi-table</v-icon>
               Puan Tablosu
-            </router-link>
+            </router-link>-->
             <router-link
                 to="/oku"
                 class="mobile-link"
