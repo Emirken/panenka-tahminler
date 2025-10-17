@@ -41,66 +41,66 @@
                 :key="prediction.id"
                 class="px-2 px-md-3"
             >
-              <v-card elevation="6" class="match-card">
-                <!-- Header with League and Date -->
-                <div class="match-header">
-                  <v-chip color="primary" size="small" class="league-chip">
-                    {{ prediction.league }}
-                  </v-chip>
-                  <span class="match-date">{{ formatMatchDate(prediction.matchDate) }}</span>
-                </div>
+              <v-card elevation="6" class="match-card h-100">
+                <div class="card-content d-flex flex-column h-100">
+                  <!-- Header with League and Date -->
+                  <div class="match-header">
+                    <v-chip color="primary" size="small" class="league-chip">
+                      {{ prediction.league }}
+                    </v-chip>
+                    <span class="match-date">{{ formatMatchDate(prediction.matchDate) }}</span>
+                  </div>
 
-                <!-- Editor Name -->
-                <div class="editor-badge">
-                  <v-chip color="secondary" size="small">
-                    <v-icon size="16" class="mr-1">mdi-account</v-icon>
-                    {{ prediction.editorName }}
-                  </v-chip>
-                </div>
+                  <!-- Editor Name -->
+                  <div class="editor-badge">
+                    <v-chip color="secondary" size="small">
+                      <v-icon size="16" class="mr-1">mdi-account</v-icon>
+                      {{ prediction.editorName }}
+                    </v-chip>
+                  </div>
 
-                <!-- Teams Section -->
-                <div class="teams-container">
-                  <div class="team-block">
-                    <div class="team-logo-wrapper">
-                      <span class="team-emoji">{{ prediction.homeLogo }}</span>
+                  <!-- Teams Section -->
+                  <div class="teams-container">
+                    <div class="team-block">
+                      <div class="team-logo-wrapper">
+                        <span class="team-emoji">{{ prediction.homeLogo }}</span>
+                      </div>
+                      <span class="team-name">{{ prediction.homeTeam }}</span>
                     </div>
-                    <span class="team-name">{{ prediction.homeTeam }}</span>
-                  </div>
 
-                  <div class="vs-divider">
-                    <span class="vs-text">VS</span>
-                  </div>
-
-                  <div class="team-block">
-                    <div class="team-logo-wrapper">
-                      <span class="team-emoji">{{ prediction.awayLogo }}</span>
+                    <div class="vs-divider">
+                      <span class="vs-text">VS</span>
                     </div>
-                    <span class="team-name">{{ prediction.awayTeam }}</span>
+
+                    <div class="team-block">
+                      <div class="team-logo-wrapper">
+                        <span class="team-emoji">{{ prediction.awayLogo }}</span>
+                      </div>
+                      <span class="team-name">{{ prediction.awayTeam }}</span>
+                    </div>
                   </div>
+
+                  <p class="prediction-explanation flex-grow-1">
+                    "{{ prediction.explanation }}"
+                  </p>
+
+                  <!-- Prediction Section - EN ALTA TAŞINDI -->
+                  <div class="prediction-box mt-auto">
+                    <p class="prediction-label">Tahmin</p>
+                    <p class="prediction-text">{{ prediction.prediction }}</p>
+                    <p class="prediction-odds">Oran: {{ prediction.odds.toFixed(2) }}</p>
+                  </div>
+
+                  <!-- CTA Button -->
+                  <v-btn
+                      color="primary"
+                      size="large"
+                      class="align-content-center cta-button"
+                      @click="goToEditorPredictions(prediction.editorId)"
+                  >
+                    <span class="text-white">Editörün Diğer Tahminleri</span>
+                  </v-btn>
                 </div>
-
-                <p class="prediction-explanation">
-                  "{{ prediction.explanation }}"
-                </p>
-
-
-                <!-- Prediction Section -->
-                <div class="prediction-box">
-                  <p class="prediction-label">Tahmin</p>
-                  <p class="prediction-text">{{ prediction.prediction }}</p>
-                  <p class="prediction-odds">Oran: {{ prediction.odds.toFixed(2) }}</p>
-                </div>
-
-                <!-- CTA Button -->
-                <v-btn
-                    block
-                    color="primary"
-                    size="large"
-                    class=" cta-button"
-                    @click="goToEditorPredictions(prediction.editorId)"
-                >
-                  <span class="text-white">Editörün Diğer Tahminleri</span>
-                </v-btn>
               </v-card>
             </v-col>
 
@@ -164,13 +164,7 @@ const goToEditorPredictions = (editorId: string) => {
   width: 100%;
   overflow-x: hidden;
 }
-.prediction-explanation {
-  font-size: 0.8rem;
-  color: #666;
-  font-style: italic;
-  line-height: 1.5;
-  margin-bottom: 12px;
-}
+
 .hero-section {
   background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   width: 100%;
@@ -258,6 +252,12 @@ const goToEditorPredictions = (editorId: string) => {
     &:hover {
       transform: translateY(-4px);
       box-shadow: 0 15px 40px rgba(54, 76, 245, 0.15) !important;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .match-header {
@@ -370,12 +370,21 @@ const goToEditorPredictions = (editorId: string) => {
       }
     }
 
+    .prediction-explanation {
+      font-size: 0.8rem;
+      color: #666;
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
     .prediction-box {
       background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
       padding: 14px;
       border-radius: 12px;
       text-align: center;
       margin: 16px 0;
+      margin-top: auto; /* Bu önemli - tahmin kutusunu en alta iter */
 
       @media (max-width: 600px) {
         padding: 12px;

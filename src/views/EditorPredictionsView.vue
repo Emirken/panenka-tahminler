@@ -87,7 +87,7 @@
                   elevation="4"
                   class="prediction-card h-100"
               >
-                <v-card-text class="pa-6">
+                <v-card-text class="pa-6 d-flex flex-column h-100">
                   <!-- Header -->
                   <div class="prediction-header">
                     <div>
@@ -116,12 +116,12 @@
                   </div>
 
                   <!-- Explanation -->
-                  <p class="prediction-explanation">
+                  <p class="prediction-explanation flex-grow-1">
                     "{{ prediction.explanation }}"
                   </p>
 
-                  <!-- Prediction Box -->
-                  <div class="prediction-box">
+                  <!-- Prediction Box - EN ALTA TAŞINDI -->
+                  <div class="prediction-box mt-auto">
                     <div class="prediction-info">
                       <p class="label">Tahmin</p>
                       <p class="value">{{ prediction.prediction }}</p>
@@ -429,6 +429,12 @@ const formatTooltipDate = (dateString: string) => {
       box-shadow: 0 8px 24px rgba(54, 76, 245, 0.15) !important;
     }
 
+    .v-card-text {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
     .prediction-header {
       display: flex;
       justify-content: space-between;
@@ -499,6 +505,7 @@ const formatTooltipDate = (dateString: string) => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-top: auto; /* Bu önemli - tahmin kutusunu en alta iter */
 
       .prediction-info,
       .odds-info {
