@@ -976,6 +976,9 @@ const deletePrediction = async (id: string) => {
     if (success) {
       successMessage.value = 'Tahmin silindi!'
       showSuccessSnackbar.value = true
+    } else {
+      successMessage.value = 'Hata! Tahmin silinemedi.'
+      showSuccessSnackbar.value = true
     }
   }
 }

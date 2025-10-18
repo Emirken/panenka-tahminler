@@ -38,14 +38,15 @@
                               class="result-icon"
                               :class="{
                                 'result-won': result.result === 'won',
-                                'result-lost': result.result === 'lost'
+                                'result-lost': result.result === 'lost',
+                                'result-pending': result.result === 'pending'
                               }"
                           >
                             <v-icon
                                 color="white"
                                 size="18"
                             >
-                              {{ result.result === 'won' ? 'mdi-check' : 'mdi-close' }}
+                              {{ result.result === 'won' ? 'mdi-check' : result.result === 'lost' ? 'mdi-close' : 'mdi-clock-outline' }}
                             </v-icon>
                           </div>
                         </template>
@@ -69,14 +70,15 @@
                               class="result-icon"
                               :class="{
                                 'result-won': result.result === 'won',
-                                'result-lost': result.result === 'lost'
+                                'result-lost': result.result === 'lost',
+                                'result-pending': result.result === 'pending'
                               }"
                           >
                             <v-icon
                                 color="white"
                                 size="18"
                             >
-                              {{ result.result === 'won' ? 'mdi-check' : 'mdi-close' }}
+                              {{ result.result === 'won' ? 'mdi-check' : result.result === 'lost' ? 'mdi-close' : 'mdi-clock-outline' }}
                             </v-icon>
                           </div>
                         </template>
@@ -340,6 +342,10 @@ const formatTooltipDate = (dateString: string) => {
               background: rgba(244, 67, 54, 0.3);
             }
 
+            &.result-pending {
+              background: rgba(255, 152, 0, 0.3);
+            }
+
             .v-icon {
               color: white !important;
             }
@@ -397,6 +403,10 @@ const formatTooltipDate = (dateString: string) => {
 
             &.result-lost {
               background: #F44336;
+            }
+
+            &.result-pending {
+              background: #FF9800;
             }
 
             &:hover {

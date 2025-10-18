@@ -1,7 +1,7 @@
 // src/store/predictions.ts - Son 20 maç ile güncellenmiş versiyon
 
 import { defineStore } from 'pinia'
-import { Prediction, PredictionResult } from '@/types'
+import { Prediction, PredictionResult, EditorResult } from '@/types'
 import {
     collection,
     addDoc,
@@ -17,6 +17,7 @@ import { db } from '@/firebase/config'
 
 interface PredictionsState {
     predictions: Prediction[]
+    editorResults: EditorResult[]
     todaysPicks: string[]
     loading: boolean
 }
@@ -24,6 +25,7 @@ interface PredictionsState {
 export const usePredictionsStore = defineStore('predictions', {
     state: (): PredictionsState => ({
         predictions: [],
+        editorResults: [],
         todaysPicks: [],
         loading: false,
     }),
@@ -72,6 +74,16 @@ export const usePredictionsStore = defineStore('predictions', {
                     ...doc.data()
                 } as Prediction))
 
+                // Editor results'ı yükle
+                const resultsRef = collection(db, 'editorResults')
+                const resultsQuery = query(resultsRef, orderBy('matchDate', 'desc'))
+                const resultsSnapshot = await getDocs(resultsQuery)
+
+                this.editorResults = resultsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                } as EditorResult))
+
                 // Today's picks'i yükle
                 const picksRef = collection(db, 'todaysPicks')
                 const picksSnapshot = await getDocs(picksRef)
@@ -83,24 +95,57 @@ export const usePredictionsStore = defineStore('predictions', {
             }
         },
 
-        // Son 20 sonuçlanmış tahmini getir
+        // Son 20 tahmini getir (predictions + editorResults)
+        // Aktif tahminlerden sadece sonuçlanmış olanlar, arşivden tüm tahminler (pending dahil)
         lastFiveResults(editorId: string) {
-            return [...this.predictions]
+            // Aktif tahminlerden sonuçlanmış olanları al (pending hariç)
+            const predictionResults = [...this.predictions]
                 .filter(p => p.editorId === editorId && p.result && p.result !== 'pending')
+                .map(p => ({
+                    homeTeam: p.homeTeam,
+                    awayTeam: p.awayTeam,
+                    prediction: p.prediction,
+                    odds: p.odds,
+                    matchDate: p.matchDate,
+                    result: p.result as 'won' | 'lost' | 'pending'
+                }))
+
+            // Silinen tahminlerden tüm sonuçları al (pending dahil - silinen tahminler için)
+            const archivedResults = [...this.editorResults]
+                .filter(r => r.editorId === editorId)
+                .map(r => ({
+                    homeTeam: r.homeTeam,
+                    awayTeam: r.awayTeam,
+                    prediction: r.prediction,
+                    odds: r.odds,
+                    matchDate: r.matchDate,
+                    result: r.result
+                }))
+
+            // İkisini birleştir, tarihe göre sırala ve ilk 20'yi al
+            return [...predictionResults, ...archivedResults]
                 .sort((a, b) => new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime())
                 .slice(0, 20)
         },
 
-        // Editörün başarı oranı
+        // Editörün başarı oranı (predictions + editorResults)
         editorSuccessRate(editorId: string) {
-            const editorPredictions = this.predictions.filter(
+            // Aktif tahminlerden sonuçlanmış olanları al
+            const activePredictions = this.predictions.filter(
                 p => p.editorId === editorId && p.result && p.result !== 'pending'
             )
 
-            if (editorPredictions.length === 0) return 0
+            // Silinen tahminlerin sonuçlarını al
+            const archivedResults = this.editorResults.filter(r => r.editorId === editorId)
 
-            const wonCount = editorPredictions.filter(p => p.result === 'won').length
-            return Math.round((wonCount / editorPredictions.length) * 100)
+            const totalCount = activePredictions.length + archivedResults.length
+
+            if (totalCount === 0) return 0
+
+            const wonCount = activePredictions.filter(p => p.result === 'won').length +
+                             archivedResults.filter(r => r.result === 'won').length
+
+            return Math.round((wonCount / totalCount) * 100)
         },
 
         // Yeni tahmin ekle
@@ -149,15 +194,54 @@ export const usePredictionsStore = defineStore('predictions', {
             return await this.updatePrediction(id, { result })
         },
 
-        // Tahmini sil
+        // Tahmini sil (sonuçlanmışsa editorResults'a kaydet)
         async deletePrediction(id: string) {
             try {
+                // Tahmini bul
+                const prediction = this.predictions.find(p => p.id === id)
+                if (!prediction) {
+                    console.error('Tahmin bulunamadı:', id)
+                    return false
+                }
+
+                // Today's picks'ten kaldır (önce bu işlemi yap)
+                try {
+                    await this.removeFromTodaysPicks(id)
+                } catch (error) {
+                    console.warn('Today\'s picks\'ten kaldırma hatası (devam ediliyor):', error)
+                }
+
+                // Silinen tahmini her durumda editorResults'a kaydet (son 20 maç listesinde görünsün)
+                try {
+                    const editorResult: Omit<EditorResult, 'id'> = {
+                        editorId: prediction.editorId,
+                        homeTeam: prediction.homeTeam,
+                        awayTeam: prediction.awayTeam,
+                        prediction: prediction.prediction,
+                        odds: prediction.odds,
+                        matchDate: prediction.matchDate,
+                        result: prediction.result || 'pending',
+                        createdAt: new Date().toISOString()
+                    }
+
+                    // editorResults koleksiyonuna ekle
+                    const resultDoc = await addDoc(collection(db, 'editorResults'), editorResult)
+
+                    // Local state'e ekle
+                    this.editorResults.unshift({
+                        id: resultDoc.id,
+                        ...editorResult
+                    })
+                } catch (error) {
+                    console.error('EditorResults\'a kaydetme hatası:', error)
+                    // Devam et, tahmin yine de silinsin
+                }
+
+                // Tahmini Firebase'den sil
                 await deleteDoc(doc(db, 'predictions', id))
 
+                // Local state'ten kaldır
                 this.predictions = this.predictions.filter(p => p.id !== id)
-
-                // Today's picks'ten de kaldır
-                await this.removeFromTodaysPicks(id)
 
                 return true
             } catch (error) {

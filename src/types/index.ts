@@ -68,3 +68,16 @@ export interface CouponMatch {
     awayTeam: string
     prediction: string
 }
+
+// Editör sonuç geçmişi (silinen tahminlerin sonuçları için)
+export interface EditorResult {
+    id?: string
+    editorId: string
+    homeTeam: string
+    awayTeam: string
+    prediction: string
+    odds: number
+    matchDate: string
+    result: 'won' | 'lost' | 'pending'
+    createdAt: string
+}
