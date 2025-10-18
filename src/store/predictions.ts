@@ -1,4 +1,4 @@
-// src/store/predictions.ts - Son 10 maç ile güncellenmiş versiyon
+// src/store/predictions.ts - Son 20 maç ile güncellenmiş versiyon
 
 import { defineStore } from 'pinia'
 import { Prediction, PredictionResult } from '@/types'
@@ -83,12 +83,12 @@ export const usePredictionsStore = defineStore('predictions', {
             }
         },
 
-        // Son 10 sonuçlanmış tahmini getir (5'ten 10'a çıkarıldı)
+        // Son 20 sonuçlanmış tahmini getir
         lastFiveResults(editorId: string) {
             return [...this.predictions]
                 .filter(p => p.editorId === editorId && p.result && p.result !== 'pending')
                 .sort((a, b) => new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime())
-                .slice(0, 10)
+                .slice(0, 20)
         },
 
         // Editörün başarı oranı

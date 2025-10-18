@@ -4,7 +4,7 @@
       <!-- Editor Tabs with Prediction Count -->
       <section class="editor-tabs-section mb-8">
         <v-row justify="center">
-          <v-col cols="12" sm="10" md="8" lg="6">
+          <v-col cols="12" sm="10" md="8" lg="10">
             <div class="editor-tabs-container">
               <button
                   v-for="editor in editors"
@@ -24,37 +24,70 @@
                     {{ getEditorPredictionCount(editor.id) }} Tahmin
                   </v-chip>
 
-                  <!-- Son 10 Maç Sonuçları -->
-                  <div v-if="getLastTenResults(editor.id).length > 0" class="results-row">
-                    <v-tooltip
-                        v-for="(result, index) in getLastTenResults(editor.id)"
-                        :key="index"
-                        location="top"
-                    >
-                      <template v-slot:activator="{ props }">
-                        <div
-                            v-bind="props"
-                            class="result-icon"
-                            :class="{
-                              'result-won': result.result === 'won',
-                              'result-lost': result.result === 'lost'
-                            }"
-                        >
-                          <v-icon
-                              color="white"
-                              size="18"
+                  <!-- Son 20 Maç Sonuçları (2 satır halinde 10'ar) -->
+                  <div v-if="getLastTenResults(editor.id).length > 0" class="results-container">
+                    <div class="results-row">
+                      <v-tooltip
+                          v-for="(result, index) in getLastTenResults(editor.id).slice(0, 10)"
+                          :key="index"
+                          location="top"
+                      >
+                        <template v-slot:activator="{ props }">
+                          <div
+                              v-bind="props"
+                              class="result-icon"
+                              :class="{
+                                'result-won': result.result === 'won',
+                                'result-lost': result.result === 'lost'
+                              }"
                           >
-                            {{ result.result === 'won' ? 'mdi-check-circle' : 'mdi-close-circle' }}
-                          </v-icon>
+                            <v-icon
+                                color="white"
+                                size="18"
+                            >
+                              {{ result.result === 'won' ? 'mdi-check' : 'mdi-close' }}
+                            </v-icon>
+                          </div>
+                        </template>
+                        <div class="result-tooltip">
+                          <div class="tooltip-match">{{ result.homeTeam }} vs {{ result.awayTeam }}</div>
+                          <div class="tooltip-date">{{ formatTooltipDate(result.matchDate) }}</div>
+                          <div class="tooltip-prediction">Tahmin: {{ result.prediction }}</div>
+                          <div class="tooltip-odds">Oran: {{ result.odds }}</div>
                         </div>
-                      </template>
-                      <div class="result-tooltip">
-                        <div class="tooltip-match">{{ result.homeTeam }} vs {{ result.awayTeam }}</div>
-                        <div class="tooltip-date">{{ formatTooltipDate(result.matchDate) }}</div>
-                        <div class="tooltip-prediction">Tahmin: {{ result.prediction }}</div>
-                        <div class="tooltip-odds">Oran: {{ result.odds }}</div>
-                      </div>
-                    </v-tooltip>
+                      </v-tooltip>
+                    </div>
+                    <div v-if="getLastTenResults(editor.id).length > 10" class="results-row">
+                      <v-tooltip
+                          v-for="(result, index) in getLastTenResults(editor.id).slice(10, 20)"
+                          :key="index + 10"
+                          location="top"
+                      >
+                        <template v-slot:activator="{ props }">
+                          <div
+                              v-bind="props"
+                              class="result-icon"
+                              :class="{
+                                'result-won': result.result === 'won',
+                                'result-lost': result.result === 'lost'
+                              }"
+                          >
+                            <v-icon
+                                color="white"
+                                size="18"
+                            >
+                              {{ result.result === 'won' ? 'mdi-check' : 'mdi-close' }}
+                            </v-icon>
+                          </div>
+                        </template>
+                        <div class="result-tooltip">
+                          <div class="tooltip-match">{{ result.homeTeam }} vs {{ result.awayTeam }}</div>
+                          <div class="tooltip-date">{{ formatTooltipDate(result.matchDate) }}</div>
+                          <div class="tooltip-prediction">Tahmin: {{ result.prediction }}</div>
+                          <div class="tooltip-odds">Oran: {{ result.odds }}</div>
+                        </div>
+                      </v-tooltip>
+                    </div>
                   </div>
                 </div>
               </button>
@@ -196,7 +229,7 @@ const getEditorPredictionCount = (editorId: string) => {
   return predictionsStore.allPredictions.filter(p => p.editorId === editorId).length
 }
 
-// Son 10 sonucu getir
+// Son 20 sonucu getir
 const getLastTenResults = (editorId: string) => {
   return predictionsStore.lastFiveResults(editorId)
 }
@@ -336,11 +369,18 @@ const formatTooltipDate = (dateString: string) => {
           font-weight: 600;
         }
 
+        .results-container {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          width: 100%;
+        }
+
         .results-row {
           display: flex;
           gap: 4px;
           justify-content: center;
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
 
           .result-icon {
             width: 24px;
