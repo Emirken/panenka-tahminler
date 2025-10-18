@@ -315,70 +315,66 @@ const goToEditorPredictions = (editorId: string) => {
 
     .teams-container {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       align-items: center;
       margin: 20px 0;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
 
       @media (max-width: 600px) {
         margin: 16px 0;
+        padding: 12px 8px;
       }
 
       .team-block {
-        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+        flex-shrink: 0;
 
         .team-logo-wrapper {
-          width: 80px;
-          height: 80px;
-          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
 
-          @media (max-width: 600px) {
-            width: 45px;
-            height: 45px;
-          }
-
           .team-emoji {
-            font-size: 2rem;
+            font-size: 1.5rem;
 
             @media (max-width: 600px) {
-              font-size: 1.5rem;
+              font-size: 1.25rem;
             }
           }
         }
 
         .team-name {
-          font-weight: 700;
-          font-size: 0.875rem;
+          font-weight: 600;
+          font-size: 0.75rem;
           text-align: center;
           color: #333;
 
           @media (max-width: 600px) {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
           }
         }
       }
 
       .vs-divider {
-        flex: 0 0 auto;
+        flex-shrink: 0;
         padding: 0 12px;
 
         @media (max-width: 600px) {
-          padding: 0 6px;
+          padding: 0 8px;
         }
 
         .vs-text {
-          font-size: 1.25rem;
+          font-size: 1rem;
           font-weight: 700;
           color: #999;
 
           @media (max-width: 600px) {
-            font-size: 1rem;
+            font-size: 0.875rem;
           }
         }
       }
