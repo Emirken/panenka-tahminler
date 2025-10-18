@@ -337,7 +337,6 @@ const goToEditorPredictions = (editorId: string) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #f5f5f5;
 
           @media (max-width: 600px) {
             width: 45px;
