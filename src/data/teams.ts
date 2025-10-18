@@ -40,7 +40,7 @@ export const leagueTeams: Record<string, string[]> = {
         'Lecce',
         'Torino',
         'Fiorentina',
-        'Verona',
+        'Hellas Verona',
         'Genoa',
         'Pisa'
     ],
@@ -76,7 +76,7 @@ export const leagueTeams: Record<string, string[]> = {
         'Hamburg',
         'St. Pauli',
         'Hoffenheim',
-        'Bremen',
+        'Werder Bremen',
         'Union Berlin',
         'Augsburg',
         'Wolfsburg',
