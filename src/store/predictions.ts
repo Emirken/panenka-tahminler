@@ -211,30 +211,32 @@ export const usePredictionsStore = defineStore('predictions', {
                     console.warn('Today\'s picks\'ten kaldırma hatası (devam ediliyor):', error)
                 }
 
-                // Silinen tahmini her durumda editorResults'a kaydet (son 20 maç listesinde görünsün)
-                try {
-                    const editorResult: Omit<EditorResult, 'id'> = {
-                        editorId: prediction.editorId,
-                        homeTeam: prediction.homeTeam,
-                        awayTeam: prediction.awayTeam,
-                        prediction: prediction.prediction,
-                        odds: prediction.odds,
-                        matchDate: prediction.matchDate,
-                        result: prediction.result || 'pending',
-                        createdAt: new Date().toISOString()
+                // Silinen tahmini sadece sonuçlanmışsa (won veya lost) editorResults'a kaydet
+                if (prediction.result === 'won' || prediction.result === 'lost') {
+                    try {
+                        const editorResult: Omit<EditorResult, 'id'> = {
+                            editorId: prediction.editorId,
+                            homeTeam: prediction.homeTeam,
+                            awayTeam: prediction.awayTeam,
+                            prediction: prediction.prediction,
+                            odds: prediction.odds,
+                            matchDate: prediction.matchDate,
+                            result: prediction.result,
+                            createdAt: new Date().toISOString()
+                        }
+
+                        // editorResults koleksiyonuna ekle
+                        const resultDoc = await addDoc(collection(db, 'editorResults'), editorResult)
+
+                        // Local state'e ekle
+                        this.editorResults.unshift({
+                            id: resultDoc.id,
+                            ...editorResult
+                        })
+                    } catch (error) {
+                        console.error('EditorResults\'a kaydetme hatası:', error)
+                        // Devam et, tahmin yine de silinsin
                     }
-
-                    // editorResults koleksiyonuna ekle
-                    const resultDoc = await addDoc(collection(db, 'editorResults'), editorResult)
-
-                    // Local state'e ekle
-                    this.editorResults.unshift({
-                        id: resultDoc.id,
-                        ...editorResult
-                    })
-                } catch (error) {
-                    console.error('EditorResults\'a kaydetme hatası:', error)
-                    // Devam et, tahmin yine de silinsin
                 }
 
                 // Tahmini Firebase'den sil
