@@ -30,7 +30,7 @@
           Editörlerimiz gün özelinde en güvendikleri bir tahminini "Günün Panenkası" olarak sizlere sunuyor
         </p>
 
-        <v-container fluid class="px-2 px-md-4">
+        <v-container fluid class="px-3 px-sm-4 px-md-4">
           <v-row>
             <!-- Dinamik olarak günün panenkası tahminlerini göster -->
             <v-col
@@ -39,7 +39,7 @@
                 md="4"
                 v-for="prediction in todaysPicks"
                 :key="prediction.id"
-                class="px-2 px-md-3"
+                class="px-3 px-sm-3 px-md-3"
             >
               <v-card elevation="6" class="match-card h-100">
                 <div class="card-content d-flex flex-column h-100">
@@ -88,7 +88,7 @@
                   <div class="prediction-box mt-auto">
                     <div class="prediction-box-header">
                       <p class="prediction-label">Tahmin</p>
-                      <v-tooltip location="top">
+                      <v-tooltip location="top" :open-on-click="true" :open-on-hover="true">
                         <template v-slot:activator="{ props }">
                           <v-icon
                               v-bind="props"
@@ -265,9 +265,9 @@ const goToEditorPredictions = (editorId: string) => {
     height: 100%;
 
     @media (max-width: 600px) {
-      padding: 16px;
+      padding: 12px;
       border-radius: 12px !important;
-      box-shadow: 0 4px 16px rgba(54, 76, 245, 0.06) !important;
+      box-shadow: 0 3px 12px rgba(54, 76, 245, 0.06) !important;
     }
 
     &:hover {
@@ -294,8 +294,8 @@ const goToEditorPredictions = (editorId: string) => {
       @media (max-width: 600px) {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
-        margin-bottom: 10px;
+        gap: 6px;
+        margin-bottom: 8px;
       }
 
       .league-chip {
@@ -305,8 +305,9 @@ const goToEditorPredictions = (editorId: string) => {
         font-size: 0.75rem;
 
         @media (max-width: 600px) {
-          font-size: 0.7rem;
-          height: 22px;
+          font-size: 0.65rem;
+          height: 20px;
+          padding: 0 6px;
         }
       }
 
@@ -315,7 +316,7 @@ const goToEditorPredictions = (editorId: string) => {
         color: #666;
 
         @media (max-width: 600px) {
-          font-size: 0.65rem;
+          font-size: 0.6rem;
         }
       }
     }
@@ -325,11 +326,12 @@ const goToEditorPredictions = (editorId: string) => {
       text-align: center;
 
       @media (max-width: 600px) {
-        margin-bottom: 12px;
+        margin-bottom: 10px;
 
         .v-chip {
-          font-size: 0.7rem !important;
-          height: 22px !important;
+          font-size: 0.65rem !important;
+          height: 20px !important;
+          padding: 0 6px !important;
         }
       }
     }
@@ -344,8 +346,8 @@ const goToEditorPredictions = (editorId: string) => {
       border-radius: 10px;
 
       @media (max-width: 600px) {
-        margin: 14px 0;
-        padding: 10px 8px;
+        margin: 10px 0;
+        padding: 8px 6px;
         border-radius: 8px;
       }
 
@@ -357,7 +359,7 @@ const goToEditorPredictions = (editorId: string) => {
         flex-shrink: 0;
 
         @media (max-width: 600px) {
-          gap: 4px;
+          gap: 3px;
         }
 
         .team-logo-wrapper {
@@ -369,7 +371,7 @@ const goToEditorPredictions = (editorId: string) => {
             font-size: 1.5rem;
 
             @media (max-width: 600px) {
-              font-size: 1.2rem;
+              font-size: 1.1rem;
             }
           }
         }
@@ -381,7 +383,7 @@ const goToEditorPredictions = (editorId: string) => {
           color: #333;
 
           @media (max-width: 600px) {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
           }
         }
       }
@@ -391,7 +393,7 @@ const goToEditorPredictions = (editorId: string) => {
         padding: 0 12px;
 
         @media (max-width: 600px) {
-          padding: 0 8px;
+          padding: 0 6px;
         }
 
         .vs-text {
@@ -400,7 +402,7 @@ const goToEditorPredictions = (editorId: string) => {
           color: #999;
 
           @media (max-width: 600px) {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
           }
         }
       }
@@ -414,8 +416,9 @@ const goToEditorPredictions = (editorId: string) => {
       margin-bottom: 12px;
 
       @media (max-width: 600px) {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         line-height: 1.4;
+        margin-bottom: 10px;
       }
     }
 
@@ -428,9 +431,9 @@ const goToEditorPredictions = (editorId: string) => {
       margin-top: auto;
 
       @media (max-width: 600px) {
-        padding: 12px;
-        margin: 12px 0;
-        border-radius: 10px;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
       }
 
       .prediction-box-header {
@@ -440,9 +443,17 @@ const goToEditorPredictions = (editorId: string) => {
         gap: 6px;
         margin-bottom: 4px;
 
+        @media (max-width: 600px) {
+          gap: 4px;
+        }
+
         .info-icon {
           cursor: pointer;
           transition: all 0.2s ease;
+
+          @media (max-width: 600px) {
+            font-size: 14px !important;
+          }
 
           &:hover {
             color: #364cf5 !important;
@@ -457,7 +468,7 @@ const goToEditorPredictions = (editorId: string) => {
         margin: 0;
 
         @media (max-width: 600px) {
-          font-size: 0.65rem;
+          font-size: 0.6rem;
         }
       }
 
@@ -468,7 +479,7 @@ const goToEditorPredictions = (editorId: string) => {
         margin-bottom: 4px;
 
         @media (max-width: 600px) {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
         }
       }
 
@@ -478,7 +489,7 @@ const goToEditorPredictions = (editorId: string) => {
         color: #2b3dc4;
 
         @media (max-width: 600px) {
-          font-size: 0.85rem;
+          font-size: 0.8rem;
         }
       }
     }
@@ -494,10 +505,10 @@ const goToEditorPredictions = (editorId: string) => {
       transition: all 0.3s ease;
 
       @media (max-width: 600px) {
-        font-size: 0.8rem;
-        padding: 14px 0 !important;
-        margin-top: 12px;
-        border-radius: 10px !important;
+        font-size: 0.75rem;
+        padding: 12px 0 !important;
+        margin-top: 10px;
+        border-radius: 8px !important;
         box-shadow: 0 3px 10px rgba(54, 76, 245, 0.2) !important;
       }
 
@@ -545,15 +556,25 @@ const goToEditorPredictions = (editorId: string) => {
   }
 
   .today-match-section {
-    padding-top: 32px !important;
-    padding-bottom: 32px !important;
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
 
     .v-container {
-      padding: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    .v-row {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
     }
 
     .v-col {
-      padding: 0 8px !important;
+      margin-bottom: 12px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 }

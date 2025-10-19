@@ -31,6 +31,8 @@
                           v-for="(result, index) in getLastTenResults(editor.id).slice(0, 10)"
                           :key="index"
                           location="top"
+                          :open-on-click="true"
+                          :open-on-hover="true"
                       >
                         <template v-slot:activator="{ props }">
                           <div
@@ -63,6 +65,8 @@
                           v-for="(result, index) in getLastTenResults(editor.id).slice(10, 20)"
                           :key="index + 10"
                           location="top"
+                          :open-on-click="true"
+                          :open-on-hover="true"
                       >
                         <template v-slot:activator="{ props }">
                           <div
@@ -160,7 +164,7 @@
                     <div class="prediction-info">
                       <div class="prediction-info-header">
                         <p class="label">Tahmin</p>
-                        <v-tooltip location="top">
+                        <v-tooltip location="top" :open-on-click="true" :open-on-hover="true">
                           <template v-slot:activator="{ props }">
                             <v-icon
                                 v-bind="props"
@@ -430,6 +434,12 @@ const formatTooltipDate = (dateString: string) => {
 
 .result-tooltip {
   padding: 8px 12px;
+  min-width: 200px;
+
+  @media (max-width: 600px) {
+    padding: 10px 14px;
+    min-width: 220px;
+  }
 
   .tooltip-match {
     font-weight: 700;
@@ -437,6 +447,12 @@ const formatTooltipDate = (dateString: string) => {
     margin-bottom: 6px;
     padding-bottom: 4px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+    @media (max-width: 600px) {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+    }
   }
 
   .tooltip-date {
@@ -447,9 +463,18 @@ const formatTooltipDate = (dateString: string) => {
     align-items: center;
     gap: 4px;
 
+    @media (max-width: 600px) {
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+
     &::before {
       content: '📅';
       font-size: 0.7rem;
+
+      @media (max-width: 600px) {
+        font-size: 0.75rem;
+      }
     }
   }
 
@@ -457,12 +482,21 @@ const formatTooltipDate = (dateString: string) => {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 4px;
+
+    @media (max-width: 600px) {
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
   }
 
   .tooltip-odds {
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.8);
     font-weight: 600;
+
+    @media (max-width: 600px) {
+      font-size: 0.8rem;
+    }
   }
 }
 
@@ -596,6 +630,10 @@ const formatTooltipDate = (dateString: string) => {
           gap: 4px;
           margin-bottom: 4px;
 
+          @media (max-width: 600px) {
+            gap: 3px;
+          }
+
           .label {
             margin-bottom: 0;
           }
@@ -603,6 +641,10 @@ const formatTooltipDate = (dateString: string) => {
           .info-icon {
             cursor: pointer;
             transition: all 0.2s ease;
+
+            @media (max-width: 600px) {
+              font-size: 13px !important;
+            }
 
             &:hover {
               color: #364cf5 !important;
@@ -695,11 +737,11 @@ const formatTooltipDate = (dateString: string) => {
 
   .prediction-card {
     border-radius: 12px !important;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     box-shadow: 0 2px 12px rgba(54, 76, 245, 0.08) !important;
 
     .v-card-text {
-      padding: 16px !important;
+      padding: 14px !important;
     }
 
     .prediction-header {
