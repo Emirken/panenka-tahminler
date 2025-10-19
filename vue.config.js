@@ -60,27 +60,16 @@ module.exports = defineConfig({
   },
 
   chainWebpack: config => {
-    // Preload/Prefetch optimization
-    config.plugin('preload').tap(options => {
-      options[0] = {
-        rel: 'preload',
-        as(entry) {
-          if (/\.css$/.test(entry)) return 'style'
-          if (/\.woff$/.test(entry)) return 'font'
-          if (/\.png$/.test(entry)) return 'image'
-          return 'script'
-        },
-        include: 'initial',
-        fileBlacklist: [/\.map$/, /hot-update\.js$/]
-      }
-      return options
-    })
+    // Disable prefetch for better performance control
+    config.plugins.delete('prefetch')
 
     // Image optimization
     config.module
       .rule('images')
-      .use('url-loader')
-      .loader('url-loader')
-      .tap(options => Object.assign(options, { limit: 10240 }))
+      .set('parser', {
+        dataUrlCondition: {
+          maxSize: 10 * 1024 // 10kb
+        }
+      })
   }
 })
