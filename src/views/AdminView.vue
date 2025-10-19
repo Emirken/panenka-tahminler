@@ -220,7 +220,7 @@
                   <span class="card-title-text">Yeni Tahmin Ekle</span>
                 </v-card-title>
                 <v-card-text class="pa-3 pa-md-6">
-                  <v-form ref="predictionForm">
+                  <v-form ref="predictionForm" @submit.prevent="addPrediction">
                     <v-row>
                       <v-col cols="12" sm="6">
                         <v-select
@@ -347,7 +347,14 @@
                       </v-col>
 
                       <v-col cols="12">
-                        <v-btn block color="primary" size="large" @click="addPrediction">
+                        <v-btn
+                          block
+                          color="primary"
+                          size="large"
+                          type="submit"
+                          :loading="isAddingPrediction"
+                          :disabled="isAddingPrediction"
+                        >
                           <v-icon class="mr-2">mdi-content-save</v-icon>
                           Tahmini Kaydet
                         </v-btn>
@@ -749,6 +756,7 @@ const showEditDialog = ref(false)
 const showSuccessSnackbar = ref(false)
 const successMessage = ref('')
 const editFormRef = ref()
+const isAddingPrediction = ref(false)
 
 const leagues = [
   'Premier Lig',
@@ -931,41 +939,47 @@ const updateResult = async (predictionId: string, result: PredictionResult) => {
 
 // Yeni tahmin ekle - ASYNC
 const addPrediction = async () => {
-  if (!authStore.user) return
+  if (!authStore.user || isAddingPrediction.value) return
 
-  const success = await predictionsStore.addPrediction({
-    editorId: authStore.user.id,
-    editorName: authStore.user.fullName || authStore.user.username,
-    league: newPrediction.value.league,
-    homeTeam: newPrediction.value.homeTeam,
-    awayTeam: newPrediction.value.awayTeam,
-    homeLogo: newPrediction.value.homeLogo || '⚽',
-    awayLogo: newPrediction.value.awayLogo || '⚽',
-    prediction: newPrediction.value.prediction,
-    odds: newPrediction.value.odds,
-    explanation: newPrediction.value.explanation,
-    matchDate: newPrediction.value.matchDate,
-  })
+  isAddingPrediction.value = true
 
-  if (success) {
-    newPrediction.value = {
-      league: '',
-      homeTeam: '',
-      awayTeam: '',
-      homeLogo: '',
-      awayLogo: '',
-      prediction: '',
-      odds: 0,
-      explanation: '',
-      matchDate: '',
+  try {
+    const success = await predictionsStore.addPrediction({
+      editorId: authStore.user.id,
+      editorName: authStore.user.fullName || authStore.user.username,
+      league: newPrediction.value.league,
+      homeTeam: newPrediction.value.homeTeam,
+      awayTeam: newPrediction.value.awayTeam,
+      homeLogo: newPrediction.value.homeLogo || '⚽',
+      awayLogo: newPrediction.value.awayLogo || '⚽',
+      prediction: newPrediction.value.prediction,
+      odds: newPrediction.value.odds,
+      explanation: newPrediction.value.explanation,
+      matchDate: newPrediction.value.matchDate,
+    })
+
+    if (success) {
+      newPrediction.value = {
+        league: '',
+        homeTeam: '',
+        awayTeam: '',
+        homeLogo: '',
+        awayLogo: '',
+        prediction: '',
+        odds: 0,
+        explanation: '',
+        matchDate: '',
+      }
+
+      successMessage.value = 'Tahmin başarıyla eklendi!'
+      showSuccessSnackbar.value = true
+      activeTab.value = 'predictions'
+    } else {
+      successMessage.value = 'Hata! Tahmin eklenemedi.'
+      showSuccessSnackbar.value = true
     }
-
-    successMessage.value = 'Tahmin başarıyla eklendi!'
-    showSuccessSnackbar.value = true
-    activeTab.value = 'predictions'
-  } else {
-    successMessage.value = 'Hata! Tahmin eklenemedi.'
-    showSuccessSnackbar.value = true
+  } finally {
+    isAddingPrediction.value = false
   }
 }
 

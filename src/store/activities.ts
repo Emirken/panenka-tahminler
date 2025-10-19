@@ -82,12 +82,9 @@ export const useActivitiesStore = defineStore('activities', {
         // Yeni etkinlik ekle
         async addActivity(activity: Omit<Activity, 'id'>) {
             try {
-                const docRef = await addDoc(collection(db, 'activities'), activity)
+                await addDoc(collection(db, 'activities'), activity)
 
-                this.activities.push({
-                    id: docRef.id,
-                    ...activity
-                })
+                // Real-time listener zaten state'i güncelleyecek
 
                 return true
             } catch (error) {
@@ -102,10 +99,7 @@ export const useActivitiesStore = defineStore('activities', {
                 const activityRef = doc(db, 'activities', id)
                 await updateDoc(activityRef, updates)
 
-                const index = this.activities.findIndex(a => a.id === id)
-                if (index !== -1) {
-                    this.activities[index] = { ...this.activities[index], ...updates }
-                }
+                // Real-time listener zaten state'i güncelleyecek
 
                 return true
             } catch (error) {
@@ -119,7 +113,7 @@ export const useActivitiesStore = defineStore('activities', {
             try {
                 await deleteDoc(doc(db, 'activities', id))
 
-                this.activities = this.activities.filter(a => a.id !== id)
+                // Real-time listener zaten state'i güncelleyecek
 
                 return true
             } catch (error) {

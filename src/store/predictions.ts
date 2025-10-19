@@ -160,12 +160,9 @@ export const usePredictionsStore = defineStore('predictions', {
                     result: 'pending' as PredictionResult,
                 }
 
-                const docRef = await addDoc(collection(db, 'predictions'), newPrediction)
+                await addDoc(collection(db, 'predictions'), newPrediction)
 
-                this.predictions.unshift({
-                    id: docRef.id,
-                    ...newPrediction
-                })
+                // Real-time listener zaten state'i güncelleyecek, manuel güncellemeye gerek yok
 
                 return true
             } catch (error) {
@@ -180,10 +177,7 @@ export const usePredictionsStore = defineStore('predictions', {
                 const predictionRef = doc(db, 'predictions', id)
                 await updateDoc(predictionRef, updates)
 
-                const index = this.predictions.findIndex(p => p.id === id)
-                if (index !== -1) {
-                    this.predictions[index] = { ...this.predictions[index], ...updates }
-                }
+                // Real-time listener zaten state'i güncelleyecek
 
                 return true
             } catch (error) {
@@ -229,13 +223,9 @@ export const usePredictionsStore = defineStore('predictions', {
                         }
 
                         // editorResults koleksiyonuna ekle
-                        const resultDoc = await addDoc(collection(db, 'editorResults'), editorResult)
+                        await addDoc(collection(db, 'editorResults'), editorResult)
 
-                        // Local state'e ekle
-                        this.editorResults.unshift({
-                            id: resultDoc.id,
-                            ...editorResult
-                        })
+                        // Real-time listener zaten editorResults'ı güncelleyecek
                     } catch (error) {
                         console.error('EditorResults\'a kaydetme hatası:', error)
                         // Devam et, tahmin yine de silinsin
@@ -245,8 +235,7 @@ export const usePredictionsStore = defineStore('predictions', {
                 // Tahmini Firebase'den sil
                 await deleteDoc(doc(db, 'predictions', id))
 
-                // Local state'ten kaldır
-                this.predictions = this.predictions.filter(p => p.id !== id)
+                // Real-time listener zaten state'i güncelleyecek
 
                 return true
             } catch (error) {
@@ -275,9 +264,7 @@ export const usePredictionsStore = defineStore('predictions', {
                     addedAt: new Date().toISOString()
                 })
 
-                if (!this.todaysPicks.includes(predictionId)) {
-                    this.todaysPicks.push(predictionId)
-                }
+                // Real-time listener zaten state'i güncelleyecek
 
                 return true
             } catch (error) {
@@ -296,7 +283,7 @@ export const usePredictionsStore = defineStore('predictions', {
                 const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref))
                 await Promise.all(deletePromises)
 
-                this.todaysPicks = this.todaysPicks.filter(id => id !== predictionId)
+                // Real-time listener zaten state'i güncelleyecek
 
                 return true
             } catch (error) {
