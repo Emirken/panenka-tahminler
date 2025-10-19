@@ -186,7 +186,7 @@ const goToEditorPredictions = (editorId: string) => {
 
   .hero-title {
     font-size: 2.5rem;
-    font-weight: bold;
+    font-weight: 700;
     color: #364cf5;
 
     @media (max-width: 960px) {
@@ -194,29 +194,32 @@ const goToEditorPredictions = (editorId: string) => {
     }
 
     @media (max-width: 600px) {
-      font-size: 1.75rem;
+      font-size: 1.6rem;
     }
   }
 
   .hero-subtitle {
     font-size: 1.5rem;
     color: #2b3dc4;
+    font-weight: 600;
 
     @media (max-width: 960px) {
       font-size: 1.25rem;
     }
 
     @media (max-width: 600px) {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
     }
   }
 
   .hero-description {
     font-size: 1rem;
     color: #666;
+    line-height: 1.6;
 
     @media (max-width: 600px) {
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      padding: 0 8px;
     }
   }
 }
@@ -235,7 +238,7 @@ const goToEditorPredictions = (editorId: string) => {
     }
 
     @media (max-width: 600px) {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
   }
 
@@ -245,9 +248,11 @@ const goToEditorPredictions = (editorId: string) => {
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.6;
 
     @media (max-width: 600px) {
-      font-size: 1rem;
+      font-size: 0.9rem;
+      padding: 0 8px;
     }
   }
 
@@ -255,18 +260,23 @@ const goToEditorPredictions = (editorId: string) => {
     background: white;
     border-radius: 16px !important;
     padding: 20px;
-    box-shadow: 0 10px 30px rgba(54, 76, 245, 0.1) !important;
+    box-shadow: 0 8px 24px rgba(54, 76, 245, 0.08) !important;
     transition: all 0.3s ease;
     height: 100%;
 
     @media (max-width: 600px) {
       padding: 16px;
       border-radius: 12px !important;
+      box-shadow: 0 4px 16px rgba(54, 76, 245, 0.06) !important;
     }
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 15px 40px rgba(54, 76, 245, 0.15) !important;
+      box-shadow: 0 12px 32px rgba(54, 76, 245, 0.12) !important;
+
+      @media (max-width: 600px) {
+        transform: translateY(-2px);
+      }
     }
 
     .card-content {
@@ -285,6 +295,7 @@ const goToEditorPredictions = (editorId: string) => {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+        margin-bottom: 10px;
       }
 
       .league-chip {
@@ -292,6 +303,11 @@ const goToEditorPredictions = (editorId: string) => {
         color: white !important;
         font-weight: 600;
         font-size: 0.75rem;
+
+        @media (max-width: 600px) {
+          font-size: 0.7rem;
+          height: 22px;
+        }
       }
 
       .match-date {
@@ -310,6 +326,11 @@ const goToEditorPredictions = (editorId: string) => {
 
       @media (max-width: 600px) {
         margin-bottom: 12px;
+
+        .v-chip {
+          font-size: 0.7rem !important;
+          height: 22px !important;
+        }
       }
     }
 
@@ -317,14 +338,15 @@ const goToEditorPredictions = (editorId: string) => {
       display: flex;
       justify-content: space-around;
       align-items: center;
-      margin: 20px 0;
+      margin: 18px 0;
       padding: 12px;
       background: #f9f9f9;
-      border-radius: 8px;
+      border-radius: 10px;
 
       @media (max-width: 600px) {
-        margin: 16px 0;
-        padding: 12px 8px;
+        margin: 14px 0;
+        padding: 10px 8px;
+        border-radius: 8px;
       }
 
       .team-block {
@@ -333,6 +355,10 @@ const goToEditorPredictions = (editorId: string) => {
         align-items: center;
         gap: 6px;
         flex-shrink: 0;
+
+        @media (max-width: 600px) {
+          gap: 4px;
+        }
 
         .team-logo-wrapper {
           display: flex;
@@ -343,7 +369,7 @@ const goToEditorPredictions = (editorId: string) => {
             font-size: 1.5rem;
 
             @media (max-width: 600px) {
-              font-size: 1.25rem;
+              font-size: 1.2rem;
             }
           }
         }
@@ -374,18 +400,23 @@ const goToEditorPredictions = (editorId: string) => {
           color: #999;
 
           @media (max-width: 600px) {
-            font-size: 0.875rem;
+            font-size: 0.85rem;
           }
         }
       }
     }
 
     .prediction-explanation {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #666;
       font-style: italic;
       line-height: 1.5;
       margin-bottom: 12px;
+
+      @media (max-width: 600px) {
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
     }
 
     .prediction-box {
@@ -399,6 +430,7 @@ const goToEditorPredictions = (editorId: string) => {
       @media (max-width: 600px) {
         padding: 12px;
         margin: 12px 0;
+        border-radius: 10px;
       }
 
       .prediction-box-header {
@@ -423,6 +455,10 @@ const goToEditorPredictions = (editorId: string) => {
         font-size: 0.7rem;
         color: #666;
         margin: 0;
+
+        @media (max-width: 600px) {
+          font-size: 0.65rem;
+        }
       }
 
       .prediction-text {
@@ -454,18 +490,24 @@ const goToEditorPredictions = (editorId: string) => {
       font-size: 0.875rem;
       padding: 18px 0 !important;
       border-radius: 12px !important;
-      box-shadow: 0 4px 12px rgba(54, 76, 245, 0.3) !important;
+      box-shadow: 0 4px 12px rgba(54, 76, 245, 0.25) !important;
       transition: all 0.3s ease;
 
       @media (max-width: 600px) {
         font-size: 0.8rem;
         padding: 14px 0 !important;
         margin-top: 12px;
+        border-radius: 10px !important;
+        box-shadow: 0 3px 10px rgba(54, 76, 245, 0.2) !important;
       }
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(54, 76, 245, 0.4) !important;
+        box-shadow: 0 6px 16px rgba(54, 76, 245, 0.35) !important;
+
+        @media (max-width: 600px) {
+          transform: translateY(-1px);
+        }
       }
     }
   }
@@ -474,6 +516,10 @@ const goToEditorPredictions = (editorId: string) => {
 .content-section {
   max-width: 1400px;
   margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 0 8px;
+  }
 }
 
 @keyframes fadeIn {
@@ -489,5 +535,26 @@ const goToEditorPredictions = (editorId: string) => {
 
 .fade-in {
   animation: fadeIn 0.6s ease-out;
+}
+
+// Additional mobile optimizations
+@media (max-width: 600px) {
+  .hero-section {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  .today-match-section {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+
+    .v-container {
+      padding: 0 !important;
+    }
+
+    .v-col {
+      padding: 0 8px !important;
+    }
+  }
 }
 </style>

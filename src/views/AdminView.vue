@@ -1044,12 +1044,15 @@ const deleteActivity = async (id: string) => {
 .login-container {
   background-color: #edf1f6;
   min-height: calc(100vh - 200px);
+  padding: 0 16px;
 
   .login-card {
-    border-radius: 12px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(54, 76, 245, 0.1) !important;
 
     @media (max-width: 600px) {
-      border-radius: 8px !important;
+      border-radius: 12px !important;
+      box-shadow: 0 2px 12px rgba(54, 76, 245, 0.08) !important;
     }
   }
 }
@@ -1073,14 +1076,14 @@ const deleteActivity = async (id: string) => {
       gap: 16px;
 
       @media (max-width: 600px) {
-        position: relative;
-        padding-top: 40px;
+        flex-direction: column;
+        gap: 12px;
       }
     }
 
     .admin-title {
       font-size: 2rem;
-      font-weight: bold;
+      font-weight: 700;
       color: #364cf5;
 
       @media (max-width: 600px) {
@@ -1093,15 +1096,13 @@ const deleteActivity = async (id: string) => {
       color: #666;
 
       @media (max-width: 600px) {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
       }
     }
 
     .logout-btn {
       @media (max-width: 600px) {
-        position: absolute;
-        top: 0;
-        right: 0;
+        align-self: flex-end;
       }
     }
   }
@@ -1110,18 +1111,22 @@ const deleteActivity = async (id: string) => {
     .admin-tabs {
       border-radius: 12px;
       overflow-x: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
 
       @media (max-width: 600px) {
-        border-radius: 8px;
+        border-radius: 10px;
       }
 
       .tab-item {
         min-width: auto !important;
-        padding: 0 16px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        text-transform: none;
 
         @media (max-width: 600px) {
-          padding: 0 8px;
-          font-size: 0.85rem;
+          padding: 10px 12px;
+          font-size: 0.8rem;
+          min-width: 80px !important;
         }
       }
     }
@@ -1132,29 +1137,39 @@ const deleteActivity = async (id: string) => {
     font-weight: 600;
 
     @media (max-width: 600px) {
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
   }
 
   .empty-state {
     text-align: center;
-    padding: 40px 20px;
+    padding: 60px 20px;
 
     @media (max-width: 600px) {
-      padding: 30px 15px;
+      padding: 40px 16px;
+
+      .v-icon {
+        font-size: 48px !important;
+      }
+
+      .text-h6 {
+        font-size: 1rem !important;
+      }
     }
   }
 
   .prediction-item {
-    padding: 12px;
+    padding: 16px;
     transition: all 0.3s ease;
+    margin-bottom: 12px;
 
     @media (max-width: 600px) {
-      padding: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
     }
 
     &:hover {
-      background-color: rgba(54, 76, 245, 0.05);
+      background-color: rgba(54, 76, 245, 0.04);
     }
 
     .prediction-content {
@@ -1164,20 +1179,31 @@ const deleteActivity = async (id: string) => {
 
     .prediction-title {
       font-size: 1rem;
+      line-height: 1.4;
 
       @media (max-width: 600px) {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
+      }
+    }
+
+    .prediction-subtitle {
+      @media (max-width: 600px) {
+        font-size: 0.8rem;
       }
     }
 
     .result-buttons {
       display: flex;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
 
       @media (max-width: 600px) {
+        gap: 4px;
+
         .v-btn {
           min-width: auto !important;
-          padding: 0 8px !important;
+          padding: 0 10px !important;
+          font-size: 0.75rem;
         }
       }
     }
@@ -1192,16 +1218,43 @@ const deleteActivity = async (id: string) => {
     .picks-title {
       display: flex;
       align-items: center;
+      gap: 8px;
+
+      @media (max-width: 600px) {
+        gap: 6px;
+
+        .v-icon {
+          font-size: 18px !important;
+        }
+      }
     }
   }
 
   .pick-item {
-    padding: 12px;
+    padding: 16px;
     transition: all 0.3s ease;
+    border-radius: 12px;
+
+    @media (max-width: 600px) {
+      padding: 12px;
+      border-radius: 10px;
+    }
 
     &.selected-pick {
-      background-color: rgba(76, 175, 80, 0.1);
+      background-color: rgba(76, 175, 80, 0.08);
       border-color: #4CAF50 !important;
+    }
+
+    .pick-title {
+      @media (max-width: 600px) {
+        font-size: 0.875rem;
+      }
+    }
+
+    .pick-subtitle {
+      @media (max-width: 600px) {
+        font-size: 0.8rem;
+      }
     }
 
     .pick-actions {
@@ -1211,6 +1264,7 @@ const deleteActivity = async (id: string) => {
 
       @media (max-width: 600px) {
         flex-direction: column;
+        gap: 6px;
       }
     }
   }
@@ -1223,11 +1277,29 @@ const deleteActivity = async (id: string) => {
   }
 
   .activity-item {
-    padding: 12px;
+    padding: 16px;
     transition: all 0.3s ease;
+    border-radius: 12px;
+
+    @media (max-width: 600px) {
+      padding: 12px;
+      border-radius: 10px;
+    }
 
     &:hover {
-      background-color: rgba(54, 76, 245, 0.05);
+      background-color: rgba(54, 76, 245, 0.04);
+    }
+
+    .activity-title {
+      @media (max-width: 600px) {
+        font-size: 0.95rem;
+      }
+    }
+
+    .activity-subtitle {
+      @media (max-width: 600px) {
+        font-size: 0.8rem;
+      }
     }
   }
 
@@ -1237,8 +1309,7 @@ const deleteActivity = async (id: string) => {
     align-items: center;
 
     @media (max-width: 600px) {
-      flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
   }
 }
@@ -1248,7 +1319,39 @@ const deleteActivity = async (id: string) => {
   border-radius: 12px;
 
   @media (max-width: 600px) {
-    border-radius: 8px;
+    border-radius: 10px;
+    border: 1px solid #eeeeee;
+  }
+}
+
+// Mobile-specific improvements
+@media (max-width: 600px) {
+  .v-card {
+    border-radius: 12px !important;
+  }
+
+  .v-card-title {
+    padding: 12px 16px !important;
+    font-size: 1rem !important;
+  }
+
+  .v-card-text {
+    padding: 16px !important;
+  }
+
+  .v-chip {
+    font-size: 0.7rem !important;
+    height: 22px !important;
+  }
+
+  .v-text-field,
+  .v-select,
+  .v-textarea {
+    font-size: 0.9rem !important;
+  }
+
+  .v-btn {
+    text-transform: none !important;
   }
 }
 </style>

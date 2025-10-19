@@ -627,68 +627,180 @@ const formatTooltipDate = (dateString: string) => {
 
 // Responsive
 @media (max-width: 600px) {
+  .editor-predictions-view {
+    padding: 24px 0 !important;
+  }
+
+  .editor-tabs-section {
+    margin-bottom: 24px !important;
+    padding: 0 12px;
+  }
+
   .editor-tabs-container {
-    flex-direction: column;
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 6px !important;
+    border-radius: 10px !important;
 
     .editor-tab {
-      min-height: 90px !important;
-      padding: 12px 8px !important;
+      min-height: 80px !important;
+      padding: 10px 12px !important;
+      border-radius: 8px !important;
 
       .editor-tab-content {
+        gap: 6px !important;
+
         .editor-name {
-          font-size: 0.75rem !important;
+          font-size: 0.85rem !important;
+          font-weight: 600 !important;
+        }
+
+        .v-chip {
+          font-size: 0.7rem !important;
+          height: 20px !important;
+          padding: 0 8px !important;
+        }
+
+        .results-row {
+          gap: 3px !important;
+
+          .result-icon {
+            width: 20px !important;
+            height: 20px !important;
+          }
         }
       }
     }
   }
 
+  .predictions-content {
+    padding: 0 12px;
+
+    .v-container {
+      padding: 0 !important;
+    }
+
+    .empty-state {
+      padding: 60px 20px !important;
+
+      .v-icon {
+        font-size: 60px !important;
+      }
+
+      .text-h6 {
+        font-size: 1rem !important;
+      }
+    }
+  }
+
   .prediction-card {
+    border-radius: 12px !important;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(54, 76, 245, 0.08) !important;
+
+    .v-card-text {
+      padding: 16px !important;
+    }
+
     .prediction-header {
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+      margin-bottom: 12px !important;
+
+      .match-title {
+        font-size: 1rem !important;
+      }
+
+      .match-date {
+        font-size: 0.75rem !important;
+      }
+
+      .v-chip {
+        align-self: flex-start;
+        font-size: 0.7rem !important;
+        height: 22px !important;
+      }
     }
 
     .teams-display {
-      flex-direction: column;
-      gap: 12px;
-      padding: 12px 8px;
-
-      .vs-text {
-        margin: 8px 0;
-      }
+      flex-direction: row !important;
+      gap: 8px;
+      padding: 12px 8px !important;
+      margin-bottom: 12px !important;
 
       .team-info {
+        gap: 4px !important;
+
         .team-logo {
-          font-size: 1.25rem;
+          font-size: 1.25rem !important;
         }
 
         .team-name {
-          font-size: 0.7rem;
+          font-size: 0.7rem !important;
         }
       }
-    }
 
-    .prediction-box {
-      flex-direction: column;
-      gap: 12px;
-      text-align: center;
-      padding: 10px;
-
-      .odds-info {
-        text-align: center !important;
-      }
-
-      .prediction-info .value {
-        font-size: 0.9rem;
-      }
-
-      .odds-info .odds-value {
-        font-size: 1.25rem;
+      .vs-text {
+        font-size: 0.85rem !important;
+        padding: 0 6px !important;
       }
     }
 
     .prediction-explanation {
-      font-size: 0.75rem;
+      font-size: 0.8rem !important;
+      line-height: 1.4 !important;
+      margin-bottom: 12px !important;
+    }
+
+    .prediction-box {
+      flex-direction: column !important;
+      gap: 10px !important;
+      padding: 12px !important;
+      border-radius: 10px !important;
+
+      .prediction-info,
+      .odds-info {
+        text-align: center !important;
+        width: 100%;
+      }
+
+      .prediction-info {
+        .prediction-info-header {
+          justify-content: center !important;
+
+          .label {
+            font-size: 0.7rem !important;
+          }
+
+          .info-icon {
+            font-size: 14px !important;
+          }
+        }
+
+        .value {
+          font-size: 0.95rem !important;
+        }
+      }
+
+      .odds-info {
+        .label {
+          font-size: 0.7rem !important;
+        }
+
+        .odds-value {
+          font-size: 1.35rem !important;
+        }
+      }
+    }
+
+    .result-badge-container {
+      padding-top: 10px !important;
+      margin-top: 12px !important;
+
+      .v-chip {
+        font-size: 0.75rem !important;
+        height: 24px !important;
+      }
     }
   }
 }
