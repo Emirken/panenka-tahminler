@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 import Header from '@/components/common/Header.vue'
 import Footer from '@/components/common/Footer.vue'
 import { useAuthStore } from '@/store/auth'
@@ -20,14 +20,19 @@ const authStore = useAuthStore()
 const predictionsStore = usePredictionsStore()
 const activitiesStore = useActivitiesStore()
 
-onMounted(async () => {
+onMounted(() => {
   authStore.checkAuth()
 
-  // Firebase'den verileri yükle (async)
-  await Promise.all([
-    predictionsStore.loadPredictions(),
-    activitiesStore.loadActivities()
-  ])
+  // Real-time listener'ları başlat
+  // Admin panelde yapılan değişiklikler otomatik olarak tüm sayfalarda görünecek
+  predictionsStore.setupRealtimeListeners()
+  activitiesStore.setupRealtimeListener()
+})
+
+onBeforeUnmount(() => {
+  // Sayfa kapatılırken listener'ları temizle
+  predictionsStore.cleanupListeners()
+  activitiesStore.cleanupListeners()
 })
 </script>
 

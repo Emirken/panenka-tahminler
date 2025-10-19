@@ -8,19 +8,22 @@ import {
     updateDoc,
     deleteDoc,
     doc,
-    getDocs
+    getDocs,
+    onSnapshot
 } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 
 interface ActivitiesState {
     activities: Activity[]
     loading: boolean
+    unsubscribers: Array<() => void>
 }
 
 export const useActivitiesStore = defineStore('activities', {
     state: (): ActivitiesState => ({
         activities: [],
         loading: false,
+        unsubscribers: [],
     }),
 
     getters: {
@@ -128,6 +131,37 @@ export const useActivitiesStore = defineStore('activities', {
         // LocalStorage metodları artık kullanılmıyor (Firebase kullanıyoruz)
         saveActivities() {
             // Firebase kullanıldığı için bu metod artık boş
+        },
+
+        // Real-time listener'ı kur
+        setupRealtimeListener() {
+            // Eğer zaten listener varsa, önce temizle
+            this.cleanupListeners()
+
+            // Activities listener
+            const activitiesRef = collection(db, 'activities')
+            const unsubActivities = onSnapshot(activitiesRef, async (snapshot) => {
+                this.activities = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                } as Activity))
+
+                // Eğer hiç etkinlik yoksa, varsayılan etkinlikleri ekle
+                if (this.activities.length === 0) {
+                    await this.addDefaultActivities()
+                }
+            }, (error) => {
+                console.error('Activities real-time listener hatası:', error)
+            })
+
+            // Unsubscribe fonksiyonunu sakla
+            this.unsubscribers = [unsubActivities]
+        },
+
+        // Listener'ları temizle
+        cleanupListeners() {
+            this.unsubscribers.forEach(unsub => unsub())
+            this.unsubscribers = []
         },
     },
 })

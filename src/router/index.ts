@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
 import HomeView from '../views/HomeView.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -12,6 +11,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/editor-tahminleri',
     name: 'editorPredictions',
     component: () => import('../views/EditorPredictionsView.vue')
+  },
+  {
+    path: '/puan-tablosu',
+    name: 'standings',
+    component: () => import('../views/StandingsView.vue')
+  },
+  {
+    path: '/takim/:teamId',
+    name: 'teamDetail',
+    component: () => import('../views/TeamDetailView.vue')
   },
   {
     path: '/oku',
@@ -41,5 +50,7 @@ const router = createRouter({
   routes
 })
 
-// Navigation Guard kaldırıldı - AdminView içinde kontrol yapılıyor
+// Real-time Firestore listeners kullanıldığı için navigation guard'a gerek kalmadı
+// Admin panelde yapılan değişiklikler otomatik olarak tüm sayfalarda görünecek
+
 export default router

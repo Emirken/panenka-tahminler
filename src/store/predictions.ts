@@ -11,7 +11,8 @@ import {
     getDocs,
     query,
     where,
-    orderBy
+    orderBy,
+    onSnapshot
 } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 
@@ -20,6 +21,7 @@ interface PredictionsState {
     editorResults: EditorResult[]
     todaysPicks: string[]
     loading: boolean
+    unsubscribers: Array<() => void>
 }
 
 export const usePredictionsStore = defineStore('predictions', {
@@ -28,6 +30,7 @@ export const usePredictionsStore = defineStore('predictions', {
         editorResults: [],
         todaysPicks: [],
         loading: false,
+        unsubscribers: [],
     }),
 
     getters: {
@@ -305,6 +308,53 @@ export const usePredictionsStore = defineStore('predictions', {
         // LocalStorage metodları artık kullanılmıyor (Firebase kullanıyoruz)
         savePredictions() {
             // Firebase kullanıldığı için bu metod artık boş
+        },
+
+        // Real-time listener'ları kur
+        setupRealtimeListeners() {
+            // Eğer zaten listener varsa, önce temizle
+            this.cleanupListeners()
+
+            // Predictions listener
+            const predictionsRef = collection(db, 'predictions')
+            const predictionsQuery = query(predictionsRef, orderBy('createdAt', 'desc'))
+            const unsubPredictions = onSnapshot(predictionsQuery, (snapshot) => {
+                this.predictions = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                } as Prediction))
+            }, (error) => {
+                console.error('Predictions real-time listener hatası:', error)
+            })
+
+            // Editor Results listener
+            const resultsRef = collection(db, 'editorResults')
+            const resultsQuery = query(resultsRef, orderBy('matchDate', 'desc'))
+            const unsubResults = onSnapshot(resultsQuery, (snapshot) => {
+                this.editorResults = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                } as EditorResult))
+            }, (error) => {
+                console.error('EditorResults real-time listener hatası:', error)
+            })
+
+            // Today's Picks listener
+            const picksRef = collection(db, 'todaysPicks')
+            const unsubPicks = onSnapshot(picksRef, (snapshot) => {
+                this.todaysPicks = snapshot.docs.map(doc => doc.data().predictionId)
+            }, (error) => {
+                console.error('TodaysPicks real-time listener hatası:', error)
+            })
+
+            // Unsubscribe fonksiyonlarını sakla
+            this.unsubscribers = [unsubPredictions, unsubResults, unsubPicks]
+        },
+
+        // Listener'ları temizle
+        cleanupListeners() {
+            this.unsubscribers.forEach(unsub => unsub())
+            this.unsubscribers = []
         },
     },
 })
