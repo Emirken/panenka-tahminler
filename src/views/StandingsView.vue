@@ -246,6 +246,12 @@ const goToTeamDetail = (teamId: number, teamName: string) => {
 }
 
 onMounted(() => {
+  // SEO: Sayfa henüz aktif değil, Google'da indexlenmesin
+  const metaRobots = document.createElement('meta')
+  metaRobots.name = 'robots'
+  metaRobots.content = 'noindex, nofollow'
+  document.head.appendChild(metaRobots)
+
   loadStandings()
 })
 </script>
