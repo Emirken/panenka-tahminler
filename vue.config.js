@@ -63,6 +63,12 @@ module.exports = defineConfig({
     // Disable prefetch for better performance control
     config.plugins.delete('prefetch')
 
+    // SEO: Set page title
+    config.plugin('html').tap(args => {
+      args[0].title = 'Panenka Tahminler - Futbol Maç Tahminleri ve Analiz | Günlük Iddaa Tahminleri'
+      return args
+    })
+
     // Image optimization
     config.module
       .rule('images')
