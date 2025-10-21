@@ -323,9 +323,11 @@ import { getTeamStatistics, getTeamFixtures, getTeamUpcomingFixtures, type TeamS
 const route = useRoute()
 const router = useRouter()
 
-const teamId = ref<number>(Number(route.params.teamId))
-const season = ref<number>(Number(route.query.season) || new Date().getFullYear())
-const leagueId = ref<number>(Number(route.query.league) || 39)
+// Router state'ten bilgileri al
+const routerState = history.state as any
+const teamId = ref<number>(routerState.teamId || 50)
+const season = ref<number>(routerState.season || new Date().getFullYear())
+const leagueId = ref<number>(routerState.league || 39)
 
 const statistics = ref<TeamStatistics | null>(null)
 const fixtures = ref<TeamFixture[]>([])

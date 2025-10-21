@@ -234,13 +234,18 @@ const loadStandings = async () => {
 }
 
 const goToTeamDetail = (teamId: number, teamName: string) => {
+  // Takım adını URL-friendly hale getir
+  const teamNameSlug = teamName.replace(/\s+/g, '-')
+
   router.push({
     name: 'teamDetail',
-    params: { teamId },
-    query: {
+    params: {
+      teamName: teamNameSlug
+    },
+    state: {
+      teamId: teamId,
       season: standings.value?.league.season,
-      league: selectedLeague.value,
-      teamName
+      league: selectedLeague.value
     }
   })
 }

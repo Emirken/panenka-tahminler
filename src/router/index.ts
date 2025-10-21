@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/StandingsView.vue')
   },
   {
-    path: '/takim/:teamId',
+    path: '/takim/:teamName',
     name: 'teamDetail',
     component: () => import('../views/TeamDetailView.vue')
   },
