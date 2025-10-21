@@ -266,6 +266,50 @@
             </div>
           </v-card-text>
         </v-card>
+
+        <!-- Upcoming Fixtures -->
+        <v-card elevation="2" class="fixtures-card mt-6">
+          <v-card-title class="card-header">
+            <v-icon class="mr-2">mdi-calendar-clock</v-icon>
+            Gelecek Maçlar
+          </v-card-title>
+          <v-card-text class="pa-0">
+            <div v-if="upcomingFixtures && upcomingFixtures.length > 0">
+              <div
+                  v-for="fixture in upcomingFixtures"
+                  :key="fixture.fixture.id"
+                  class="fixture-item"
+              >
+                <div class="fixture-date">
+                  {{ formatDate(fixture.fixture.date) }}
+                </div>
+                <div class="fixture-teams">
+                  <div class="fixture-team">
+                    <img :src="fixture.teams.home.logo" class="fixture-team-logo" />
+                    <span class="fixture-team-name">{{ fixture.teams.home.name }}</span>
+                  </div>
+                  <div class="fixture-score">
+                    <v-chip size="small" color="primary" variant="outlined">
+                      {{ fixture.league.name }}
+                    </v-chip>
+                  </div>
+                  <div class="fixture-team">
+                    <span class="fixture-team-name">{{ fixture.teams.away.name }}</span>
+                    <img :src="fixture.teams.away.logo" class="fixture-team-logo" />
+                  </div>
+                </div>
+                <div class="fixture-result">
+                  <v-chip size="small" color="grey" variant="outlined">
+                    {{ getMatchStatus(fixture.fixture.status.short) }}
+                  </v-chip>
+                </div>
+              </div>
+            </div>
+            <div v-else class="pa-8 text-center text-grey">
+              Gelecek maç bilgisi bulunamadı
+            </div>
+          </v-card-text>
+        </v-card>
       </div>
     </div>
   </div>
@@ -274,7 +318,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getTeamStatistics, getTeamFixtures, type TeamStatistics, type TeamFixture } from '@/services/footballApi'
+import { getTeamStatistics, getTeamFixtures, getTeamUpcomingFixtures, type TeamStatistics, type TeamFixture } from '@/services/footballApi'
 
 const route = useRoute()
 const router = useRouter()
@@ -285,6 +329,7 @@ const leagueId = ref<number>(Number(route.query.league) || 39)
 
 const statistics = ref<TeamStatistics | null>(null)
 const fixtures = ref<TeamFixture[]>([])
+const upcomingFixtures = ref<TeamFixture[]>([])
 const loading = ref(false)
 const error = ref('')
 
@@ -356,13 +401,15 @@ const loadTeamData = async () => {
   error.value = ''
 
   try {
-    const [statsData, fixturesData] = await Promise.all([
+    const [statsData, fixturesData, upcomingData] = await Promise.all([
       getTeamStatistics(teamId.value, season.value, leagueId.value),
-      getTeamFixtures(teamId.value, season.value, 10)
+      getTeamFixtures(teamId.value, season.value, 10),
+      getTeamUpcomingFixtures(teamId.value, 5)
     ])
 
     statistics.value = statsData
     fixtures.value = fixturesData
+    upcomingFixtures.value = upcomingData
   } catch (err: any) {
     error.value = 'Takım bilgileri yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.'
     console.error('Team detail error:', err)

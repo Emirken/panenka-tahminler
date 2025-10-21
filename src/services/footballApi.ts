@@ -286,7 +286,7 @@ export const getStandings = async (
     season?: number
 ): Promise<StandingsResponse> => {
     // 2024 sezonunu kullan (eğer başka sezon belirtilmemişse)
-    const currentSeason = season || 2022
+    const currentSeason = season || 2025
 
     const response = await fetch(
         `${API_BASE_URL}/standings?league=${leagueId}&season=${currentSeason}`,
